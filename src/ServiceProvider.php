@@ -21,8 +21,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
     {
         $this->package($this->packageNamespace, $this->packageNamespace, __DIR__.'/../..');
 
-        dd($this->getConfig('enabled'));
-
         if( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
         {
             IlluminateAliasLoader::getInstance()->alias(
