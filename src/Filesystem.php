@@ -19,7 +19,7 @@
  * @link       http://pragmarx.com
  */
 
-namespace PragmaRX\Support\Support;
+namespace PragmaRX\Support;
 
 use Illuminate\Filesystem\Filesystem as IlluminateFilesystem;
 
