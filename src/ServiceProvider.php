@@ -62,7 +62,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
      */
     public function boot()
     {
-        $this->packageNamespace = "$this->packageVendor/$this->packageName".;
+        $this->packageNamespace = "$this->packageVendor/$this->packageName";
 
         $this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
 
@@ -85,6 +85,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
     public function preRegister()
     {   
         $this->registerConfig();
+
+        $this->registerFilesystem();
     }
 
     /**
@@ -97,6 +99,19 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
         $this->app[$this->packageName.'.config'] = $this->app->share(function($app)
         {
             return new Config($app['config'], $this->packageNamespace);
+        });
+    }
+
+    /**
+     * Register the Filesystem driver used by the child ServiceProvider
+     * 
+     * @return void
+     */
+    private function registerFileSystem()
+    {
+        $this->app[$this->packageName.'.fileSystem'] = $this->app->share(function($app)
+        {
+            return new Filesystem;
         });
     }
 

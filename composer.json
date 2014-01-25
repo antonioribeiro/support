@@ -1,9 +1,9 @@
 {
     "name": "pragmarx/support",
 
-    "description": "<Full package description.>",
+    "description": "PragmaRX components support package",
 
-    "keywords": ["laravel"],
+    "keywords": ["pragmarx","laravel"],
 
     "license": "MIT",
 
