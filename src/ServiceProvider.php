@@ -34,8 +34,25 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
      */
     protected $defer = false;
 
+    /**
+     * This variable will be built at runtime using child variables
+     * 
+     * @var string
+     */
+    protected $packageNamespace;
+
+    /**
+     * Gets the root directory of the child ServiceProvider
+     * 
+     * @return string
+     */
     abstract protected function getRootDirectory();
 
+    /**
+     * Boot procedure in the child ServiceProvider
+     * 
+     * @return void
+     */
     abstract protected function wakeUp();
 
     /**
@@ -45,6 +62,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
      */
     public function boot()
     {
+        $this->packageNamespace = "$this->packageVendor/$this->packageName".;
+
         $this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
 
         if( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
@@ -68,11 +87,11 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
         $this->registerConfig();
     }
 
-    private function wakeUp()
-    {
-        $this->app['helpers']->boot();
-    }
-
+    /**
+     * Register the configuration object
+     * 
+     * @return void
+     */
     public function registerConfig()
     {
         $this->app[$this->packageName.'.config'] = $this->app->share(function($app)
@@ -81,6 +100,12 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
         });
     }
 
+    /**
+     * Get a configuration value
+     * 
+     * @param  string $key 
+     * @return mixed
+     */
     private function getConfig($key)
     {
         return $this->app['config']->get($this->packageNamespace.'::'.$key);
