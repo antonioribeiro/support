@@ -36,6 +36,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
     abstract protected function getRootDirectory();
 
+    abstract protected function wakeUp();
+
     /**
      * Bootstrap the application events.
      *
