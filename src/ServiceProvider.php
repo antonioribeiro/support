@@ -90,11 +90,22 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
     }
 
     /**
+     * Get a configuration value
+     * 
+     * @param  string $key 
+     * @return mixed
+     */
+    public function getConfig($key)
+    {
+        return $this->app['config']->get($this->packageNamespace.'::'.$key);
+    }
+
+    /**
      * Register the configuration object
      * 
      * @return void
      */
-    public function registerConfig()
+    private function registerConfig()
     {
         $this->app[$this->packageName.'.config'] = $this->app->share(function($app)
         {
@@ -115,14 +126,4 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
         });
     }
 
-    /**
-     * Get a configuration value
-     * 
-     * @param  string $key 
-     * @return mixed
-     */
-    private function getConfig($key)
-    {
-        return $this->app['config']->get($this->packageNamespace.'::'.$key);
-    }
 }
