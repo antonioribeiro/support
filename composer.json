@@ -16,7 +16,14 @@
     ],
 
     "require": {
-        "php": ">=5.3.7"
+        "php": ">=5.3.7",
+        "illuminate/support": "4.1.*",
+        "illuminate/foundation": "4.1.*",
+        "illuminate/cache": "4.1.*",
+        "illuminate/config": "4.1.*",
+        "illuminate/filesystem": "4.1.*",
+        "illuminate/http": "4.1.*",
+        "symfony/finder": "2.5.*",
     },
 
     "require-dev": {
