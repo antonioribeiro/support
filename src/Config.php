@@ -36,7 +36,7 @@ class Config {
 
     public function get($key, $default = null)
     {
-        return $this->config->get($this->namespace.'::'.$key);
+        return $this->config->get($this->namespace.'::'.$key, $default);
     }
 
 }
