@@ -1,6 +1,6 @@
 <?php
 
-namespace Support;
+namespace PragmaRX\Support;
 
 /**
  * @see     https://raw.github.com/sinergia/brasil/master/Sinergia/Brasil/CPF.php
