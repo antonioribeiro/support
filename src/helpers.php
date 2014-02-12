@@ -28,3 +28,20 @@ function env($variable)
 
 	return $value;
 }
+
+function getExecutablePath($cmd) 
+{
+    return trim(shell_exec("which $cmd"));
+}
+
+function commandExists($cmd) 
+{
+    $returnVal = trim(getExecutablePath("which $cmd"));
+    
+    return (empty($returnVal) ? false : true);
+}
+
+function removeTrailingSlash($string)
+{
+	return substr($string, -1) == '/' ? substr($string, 0, -1) : $string;
+}
