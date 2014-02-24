@@ -211,7 +211,7 @@ if ( ! function_exists('explodeTree'))
 
 if ( ! function_exists('array_get'))
 {
-	private function array_get($array, $key, $default = null)
+	function array_get($array, $key, $default = null)
 	{
 		if (is_null($key)) return $array;
 
