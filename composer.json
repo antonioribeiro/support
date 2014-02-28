@@ -17,11 +17,11 @@
 
     "require": {
         "php": ">=5.3.7",
-        "illuminate/support": "4.*",
-        "illuminate/foundation": "4.*",
-        "illuminate/cache": "4.*",
-        "illuminate/config": "4.*",
-        "illuminate/filesystem": "4.*",
+        "laravel/framework": "~4.0",
+        "illuminate/support": "~4.0",
+        "illuminate/cache": "~4.0",
+        "illuminate/config": "~4.0",
+        "illuminate/filesystem": "~4.0",
         "illuminate/http": "4.*"
     },
 
