@@ -174,7 +174,7 @@ if ( ! function_exists('explodeTree'))
 	 */
 	function explodeTree($array, $delimiter = '_', $baseval = false)
 	{
-	    if(!is_array($array)) return false;
+	    if (!is_array($array)) return false;
 	    $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
 	    $returnArr = array();
 	    foreach ($array as $key => $val) {

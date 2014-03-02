@@ -66,7 +66,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
         $this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
 
-        if( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
+        if ( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
         {
             IlluminateAliasLoader::getInstance()->alias(
                                                             $this->getConfig($this->packageName.'_alias'),
