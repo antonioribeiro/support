@@ -21,4 +21,4 @@
 
 namespace PragmaRX\Support\Exceptions;
 
-class EnvironmentVariableNotSet extends \Exception {}
+class EnvironmentVariableNotSet extends Exception {}
