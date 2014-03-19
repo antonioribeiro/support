@@ -267,3 +267,30 @@ if ( ! function_exists('array_pluck'))
 		return $results;
 	}
 }
+
+if ( ! function_exists('z'))
+{
+	function z($data = '')
+	{
+		echo "<pre>";
+		if(is_string($data))
+		{
+			echo htmlspecialchars($data)."<br>";
+		}
+		else
+		{
+			var_dump($data);
+		}
+
+		echo "</pre>";
+	}
+}
+
+if ( ! function_exists('zz'))
+{
+	function zz($data)
+	{
+		z($data);
+		die;
+	}
+}
