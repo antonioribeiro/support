@@ -17,12 +17,6 @@
 
     "require": {
         "php": ">=5.3.7",
-        "laravel/framework": "~4.0",
-        "illuminate/support": "~4.0",
-        "illuminate/cache": "~4.0",
-        "illuminate/config": "~4.0",
-        "illuminate/filesystem": "~4.0",
-        "illuminate/http": "4.*"
     },
 
     "require-dev": {
@@ -45,5 +39,9 @@
             }
     },
 
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+
+    "suggest": {
+        "laravel/framework": "Laravel framework.",
+    },
 }
