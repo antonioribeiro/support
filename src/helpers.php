@@ -268,6 +268,36 @@ if ( ! function_exists('array_pluck'))
 	}
 }
 
+if ( ! function_exists('format_masked'))
+{
+	function format_masked($val, $mask, $charMask = '9')
+	{
+		$maskared = '';
+
+		$k = 0;
+
+		for ($i = 0; $i <= strlen($mask)-1; $i++)
+		{
+			if ($mask[$i] == $charMask)
+			{
+				if (isset($val[$k]))
+				{
+					$maskared .= $val[$k++];
+				}
+			}
+			else
+			{
+				if (isset($mask[$i]))
+				{
+					$maskared .= $mask[$i];
+				}
+			}
+		}
+
+		return $maskared;
+	}
+}
+
 if ( ! function_exists('z'))
 {
 	function z($data = '')
