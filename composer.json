@@ -16,7 +16,7 @@
     ],
 
     "require": {
-        "php": ">=5.3.7",
+        "php": ">=5.3.7"
     },
 
     "require-dev": {
@@ -42,6 +42,6 @@
     "minimum-stability": "dev",
 
     "suggest": {
-        "laravel/framework": "Laravel framework.",
-    },
+        "laravel/framework": "Laravel framework."
+    }
 }
