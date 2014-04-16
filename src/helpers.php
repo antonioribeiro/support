@@ -231,6 +231,20 @@ if ( ! function_exists('array_get'))
 	}	
 }
 
+if ( ! function_exists('value'))
+{
+	/**
+	 * Return the default value of the given value.
+	 *
+	 * @param  mixed  $value
+	 * @return mixed
+	 */
+	function value($value)
+	{
+		return $value instanceof Closure ? $value() : $value;
+	}
+}
+
 if ( ! function_exists('array_pluck'))
 {
 	/**
@@ -369,3 +383,35 @@ if ( ! function_exists('make_comparer')) {
 		};
 	}
 }
+
+if ( ! function_exists('array_insert'))
+{
+	function array_insert(&$array, $insert, $position = -1) 
+	{
+		$array = array_values($array);
+
+	    $position = ($position == -1) ? (count($array)) : $position ;
+
+	    if($position != (count($array))) {
+	        $ta = $array;
+
+	        for($i = $position; $i < (count($array)); $i++) {
+	            if(!isset($array[$i])) {
+	                die(print_r($array, 1)."\r\nInvalid array: All keys must be numerical and in sequence.");
+	            }
+
+	            $tmp[$i+1] = $array[$i];
+	            unset($ta[$i]);
+	        }
+
+	        $ta[$position] = $insert;
+	        $array = $ta + $tmp;
+	        //print_r($array);
+	    } else {
+	        $array[$position] = $insert;
+	    }
+
+	    //ksort($array);
+	    return true;
+	}
+}	
