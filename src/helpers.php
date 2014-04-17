@@ -177,7 +177,8 @@ if ( ! function_exists('explodeTree'))
 	    if (!is_array($array)) return false;
 	    $splitRE   = '/' . preg_quote($delimiter, '/') . '/';
 	    $returnArr = array();
-	    foreach ($array as $key => $val) {
+	    foreach ($array as $key => $val)
+	    {
 	        // Get parent parts and the current leaf
 	        $parts  = preg_split($splitRE, $key, -1, PREG_SPLIT_NO_EMPTY);
 	        $leafPart = array_pop($parts);
@@ -185,11 +186,15 @@ if ( ! function_exists('explodeTree'))
 	        // Build parent structure
 	        // Might be slow for really deep and large structures
 	        $parentArr = &$returnArr;
-	        foreach ($parts as $part) {
-	            if (!isset($parentArr[$part])) {
+	        foreach ($parts as $part)
+	        {
+	            if (!isset($parentArr[$part]))
+	            {
 	                $parentArr[$part] = array();
-	            } elseif (!is_array($parentArr[$part])) {
-	                if ($baseval) {
+	            } elseif (!is_array($parentArr[$part]))
+	            {
+	                if ($baseval)
+	                {
 	                    $parentArr[$part] = array('__base_val' => $parentArr[$part]);
 	                } else {
 	                    $parentArr[$part] = array();
@@ -199,9 +204,11 @@ if ( ! function_exists('explodeTree'))
 	        }
 
 	        // Add the final part to the structure
-	        if (empty($parentArr[$leafPart])) {
+	        if (empty($parentArr[$leafPart]))
+	        {
 	            $parentArr[$leafPart] = $val;
-	        } elseif ($baseval && is_array($parentArr[$leafPart])) {
+	        } elseif ($baseval && is_array($parentArr[$leafPart]))
+	        {
 	            $parentArr[$leafPart]['__base_val'] = $val;
 	        }
 	    }
@@ -316,17 +323,20 @@ if ( ! function_exists('z'))
 {
 	function z($data = '')
 	{
-		echo "<pre>";
+		$cli = php_sapi_name() === 'cli';
+
+		echo $cli ? "\n" : "<pre>";
+
 		if(is_string($data))
 		{
-			echo htmlspecialchars($data)."<br>";
+			echo htmlspecialchars($data) . ($cli ? "\n" : "<br>");
 		}
 		else
 		{
 			var_dump($data);
 		}
 
-		echo "</pre>";
+		echo $cli ? "\n" : "";
 	}
 }
 
@@ -345,25 +355,30 @@ if ( ! function_exists('zz'))
  *      http://stackoverflow.com/questions/96759/how-do-i-sort-a-multidimensional-array-in-php
  *
  */
-if ( ! function_exists('make_comparer')) {
+if ( ! function_exists('make_comparer'))
+{
 	function make_comparer()
 	{
 		// Normalize criteria up front so that the comparer finds everything tidy
 		$criteria = func_get_args();
-		foreach ($criteria as $index => $criterion) {
+		foreach ($criteria as $index => $criterion)
+		{
 			$criteria[$index] = is_array($criterion)
 				? array_pad($criterion, 3, null)
 				: array($criterion, SORT_ASC, null);
 		}
 
-		return function ($first, $second) use (&$criteria) {
-			foreach ($criteria as $criterion) {
+		return function ($first, $second) use (&$criteria)
+		{
+			foreach ($criteria as $criterion)
+			{
 				// How will we compare this round?
 				list($column, $sortOrder, $projection) = $criterion;
 				$sortOrder = $sortOrder === SORT_DESC ? -1 : 1;
 
 				// If a projection was defined project the values now
-				if ($projection) {
+				if ($projection)
+				{
 					$lhs = call_user_func($projection, $first[$column]);
 					$rhs = call_user_func($projection, $second[$column]);
 				} else {
@@ -372,9 +387,11 @@ if ( ! function_exists('make_comparer')) {
 				}
 
 				// Do the actual comparison; do not return if equal
-				if ($lhs < $rhs) {
+				if ($lhs < $rhs)
+				{
 					return -1 * $sortOrder;
-				} else if ($lhs > $rhs) {
+				} else if ($lhs > $rhs)
+				{
 					return 1 * $sortOrder;
 				}
 			}
@@ -386,32 +403,66 @@ if ( ! function_exists('make_comparer')) {
 
 if ( ! function_exists('array_insert'))
 {
-	function array_insert(&$array, $insert, $position = -1) 
+	function array_insert(&$array, $insert, $position = -1)
 	{
 		$array = array_values($array);
 
-	    $position = ($position == -1) ? (count($array)) : $position ;
+		$position = ($position == -1) ? (count($array)) : $position;
 
-	    if($position != (count($array))) {
-	        $ta = $array;
+		if ($position != (count($array)))
+		{
+			$ta = $array;
 
-	        for($i = $position; $i < (count($array)); $i++) {
-	            if(!isset($array[$i])) {
-	                die(print_r($array, 1)."\r\nInvalid array: All keys must be numerical and in sequence.");
-	            }
+			for ($i = $position; $i < (count($array)); $i++)
+			{
+				if (!isset($array[$i]))
+				{
+					die(print_r($array, 1) . "\r\nInvalid array: All keys must be numerical and in sequence.");
+				}
 
-	            $tmp[$i+1] = $array[$i];
-	            unset($ta[$i]);
-	        }
+				$tmp[$i + 1] = $array[$i];
+				unset($ta[$i]);
+			}
 
-	        $ta[$position] = $insert;
-	        $array = $ta + $tmp;
-	        //print_r($array);
-	    } else {
-	        $array[$position] = $insert;
-	    }
+			$ta[$position] = $insert;
+			$array = $ta + $tmp;
+			//print_r($array);
+		} else {
+			$array[$position] = $insert;
+		}
 
-	    //ksort($array);
-	    return true;
+		//ksort($array);
+		return true;
 	}
-}	
+}
+
+if ( ! function_exists('is_json'))
+{
+	function is_json($string)
+	{
+		json_decode($string);
+		return (json_last_error() == JSON_ERROR_NONE);
+	}
+}
+
+if ( ! function_exists('is_xml'))
+{
+	function is_xml($string)
+	{
+		$doc = simplexml_load_string($string);
+
+		return ! empty($doc);
+	}
+}
+
+if ( ! function_exists('xml_to_json'))
+{
+	function xml_to_json($string)
+	{
+		$xml = simplexml_load_string($string);
+
+		$json = json_encode($xml);
+
+		return json_decode($json, TRUE);
+	}
+}
