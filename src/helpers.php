@@ -319,15 +319,23 @@ if ( ! function_exists('format_masked'))
 	}
 }
 
+if ( ! function_exists('d'))
+{
+	function d($data = '')
+	{
+		z($data);
+	}
+}
+
 if ( ! function_exists('z'))
 {
 	function z($data = '')
 	{
 		$cli = php_sapi_name() === 'cli';
 
-		echo $cli ? "\n" : "<pre>";
+		echo $cli ? "" : "<pre>";
 
-		if(is_string($data))
+		if (is_string($data))
 		{
 			echo htmlspecialchars($data) . ($cli ? "\n" : "<br>");
 		}
@@ -336,7 +344,15 @@ if ( ! function_exists('z'))
 			var_dump($data);
 		}
 
-		echo $cli ? "\n" : "";
+		echo $cli ? "" : "</pre>";
+	}
+}
+
+if ( ! function_exists('dd'))
+{
+	function dd($data)
+	{
+		zz($data);
 	}
 }
 
@@ -345,6 +361,7 @@ if ( ! function_exists('zz'))
 	function zz($data)
 	{
 		z($data);
+
 		die;
 	}
 }
@@ -441,6 +458,7 @@ if ( ! function_exists('is_json'))
 	function is_json($string)
 	{
 		json_decode($string);
+
 		return (json_last_error() == JSON_ERROR_NONE);
 	}
 }
