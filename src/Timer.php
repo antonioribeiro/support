@@ -123,6 +123,13 @@ class Timer {
 		return sprintf("%.4f", static::getElapsedRaw($timer, $stop));
 	}
 
+	/**
+	 * Provides static calls.
+	 *
+	 * @param $name
+	 * @param array $arguments
+	 * @return mixed
+	 */
 	public static function __callStatic($name, array $arguments)
 	{
 		if ( ! static::$instance)
@@ -135,8 +142,16 @@ class Timer {
 		return call_user_func_array([static::$instance, $name], $arguments);
 	}
 
+	/**
+	 * Provides dynamic calls.
+	 *
+	 * @param $name
+	 * @param array $arguments
+	 * @return mixed
+	 */
 	public function __call($name, array $arguments)
 	{
 		return call_user_func_array([$this, $name], $arguments);
 	}
+	
 }
