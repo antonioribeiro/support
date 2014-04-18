@@ -45,6 +45,29 @@ class Timer {
 	private static $instance;
 
 	/**
+	 * The format used by elapsed().
+	 *
+	 * @var string
+	 */
+	private static $format = "%.4f";
+
+	/**
+	 * @param string $format
+	 */
+	public static function setFormat($format)
+	{
+		self::$format = $format;
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function getFormat()
+	{
+		return self::$format;
+	}
+
+	/**
 	 * Start a timer.
 	 *
 	 * @param string $timer
@@ -74,9 +97,9 @@ class Timer {
 	 * @param string $timer
 	 * @return bool
 	 */
-	private function timerStarted($timer = 'default')
+	private function isStarted($timer = 'default')
 	{
-		return ! is_null(static::$startedAt[$timer]);
+		return !$this->isStopped($timer) && ! is_null(static::$startedAt[$timer]);
 	}
 
 	/**
@@ -85,7 +108,7 @@ class Timer {
 	 * @param string $timer
 	 * @return bool
 	 */
-	private function timerStopped($timer = 'default')
+	private function isStopped($timer = 'default')
 	{
 		return ! is_null(static::$stoppedAt[$timer]);
 	}
@@ -97,14 +120,14 @@ class Timer {
 	 * @param bool $stop
 	 * @return number
 	 */
-	private function getElapsedRaw($timer = 'default', $stop = true)
+	private function elapsedRaw($timer = 'default', $stop = true)
 	{
 		if ($stop)
 		{
 			static::stop($timer);
 		}
 
-		$end = static::timerStopped($timer)
+		$end = static::isStopped($timer)
 				? static::$stoppedAt[$timer]
 				: microtime(true);
 
@@ -118,9 +141,9 @@ class Timer {
 	 * @param bool $stop
 	 * @return string
 	 */
-	private function getElapsedTime($timer = 'default', $stop = true)
+	private function elapsed($timer = 'default', $stop = true)
 	{
-		return sprintf("%.4f", static::getElapsedRaw($timer, $stop));
+		return sprintf($this->getFormat(), static::elapsedRaw($timer, $stop));
 	}
 
 	/**
