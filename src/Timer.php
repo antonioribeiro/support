@@ -52,11 +52,22 @@ class Timer {
 	private static $format = "%.4f";
 
 	/**
+	 * Create a timer.
+	 *
+	 */
+	public function __construct()
+	{
+		static::$instance = $this;
+	}
+
+	/**
 	 * @param string $format
 	 */
 	public static function setFormat($format)
 	{
 		self::$format = $format;
+
+		return static::$instance;
 	}
 
 	/**
@@ -71,13 +82,28 @@ class Timer {
 	 * Start a timer.
 	 *
 	 * @param string $timer
-	 * @internal param $
+	 * @return Timer
 	 */
 	private function start($timer = 'default')
 	{
 		static::$startedAt[$timer] = microtime(true);
 
 		static::$stoppedAt[$timer] = null;
+
+		return static::$instance;
+	}
+
+	/**
+	 * Put it to sleep a while.
+	 *
+	 * @param int $seconds
+	 * @return Timer
+	 */
+	private function sleep($seconds = 1)
+	{
+		sleep($seconds);
+
+		return static::$instance;
 	}
 
 	/**
@@ -89,6 +115,8 @@ class Timer {
 	private function stop($timer = 'default')
 	{
 		static::$stoppedAt[$timer] = microtime(true);
+
+		return static::$instance;
 	}
 
 	/**
