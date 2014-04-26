@@ -484,3 +484,73 @@ if ( ! function_exists('xml_to_json'))
 		return json_decode($json, TRUE);
 	}
 }
+
+if ( ! function_exists('studly')) {
+
+	/**
+	 * Convert a value to studly caps case.
+	 *
+	 * @param  string $value
+	 * @return string
+	 */
+	function studly($value)
+	{
+		$value = ucwords(str_replace(array('-', '_'), ' ', $value));
+
+		return str_replace(' ', '', $value);
+	}
+}
+
+if ( ! function_exists('camel')) {
+	/**
+	 * Convert a value to camel case.
+	 *
+	 * @param  string $value
+	 * @return string
+	 */
+	function camel($value)
+	{
+		return lcfirst(studly($value));
+	}
+}
+
+if ( ! function_exists('snake')) {
+
+	/**
+	 * Convert a string to snake case.
+	 *
+	 * @param  string $value
+	 * @param  string $delimiter
+	 * @return string
+	 */
+	function snake($value, $delimiter = '_')
+	{
+		$replace = '$1' . $delimiter . '$2';
+
+		return ctype_lower($value) ? $value : strtolower(preg_replace('/(.)([A-Z])/', $replace, $value));
+	}
+}
+
+if ( ! function_exists('camel')) {
+	/**
+	 * Convert a value to camel case.
+	 *
+	 * @param  string $value
+	 * @return string
+	 */
+	function camel($value)
+	{
+		return lcfirst(studly($value));
+	}
+}
+
+if ( ! function_exists('array_equal')) {
+
+	function array_equal($a, $b)
+	{
+		return is_array($a)
+				&& is_array($b)
+				&& (array_diff($a, $b) === array_diff($b, $a));
+	}
+
+}
