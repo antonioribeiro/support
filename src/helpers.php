@@ -548,9 +548,22 @@ if ( ! function_exists('array_equal')) {
 
 	function array_equal($a, $b)
 	{
-		return is_array($a)
-				&& is_array($b)
-				&& (array_diff($a, $b) === array_diff($b, $a));
+		$a = one_dimension_array($a);
+
+		$b = one_dimension_array($b);
+
+		return array_diff($a, $b) === array_diff($b, $a);
+	}
+
+}
+
+if ( ! function_exists('one_dimension_array')) {
+
+	function one_dimension_array($array)
+	{
+		$it =  new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array));
+
+		return iterator_to_array($it, false);
 	}
 
 }
