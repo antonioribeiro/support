@@ -557,7 +557,8 @@ if ( ! function_exists('array_equal')) {
 
 }
 
-if ( ! function_exists('one_dimension_array')) {
+if ( ! function_exists('one_dimension_array')) 
+{
 
 	function one_dimension_array($array)
 	{
@@ -566,4 +567,28 @@ if ( ! function_exists('one_dimension_array')) {
 		return iterator_to_array($it, false);
 	}
 
+}
+
+if ( !function_exists( 'array_implode' )) 
+{
+	function array_implode( $glue, $separator, $array ) 
+	{
+		if ( ! is_array( $array ) )
+		{
+			return $array;
+		}
+	 
+		$string = array();
+	 
+		foreach ( $array as $key => $val ) 
+		{
+			if ( is_array( $val ) )
+			{
+				$val = implode( ',', $val );
+			}
+
+			$string[] = "{$key}{$glue}{$val}";
+		}
+		return implode( $separator, $string );
+	}
 }
