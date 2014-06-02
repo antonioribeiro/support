@@ -71,7 +71,7 @@ class GeoIp {
 
 	private function open()
 	{
-		$file = __DIR__."/geoip/GeoLiteCity.dat";
+		$file = __DIR__ . "/geoip/GeoLiteCity.dat";
 
 		if ( ! file_exists($file))
 		{
@@ -83,7 +83,7 @@ class GeoIp {
 
 	private function close()
 	{
-		if($this->handle)
+		if ($this->handle)
 		{
 			geoip_close($this->handle);
 		}

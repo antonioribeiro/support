@@ -592,3 +592,101 @@ if ( !function_exists( 'array_implode' ))
 		return implode( $separator, $string );
 	}
 }
+
+if ( !function_exists( 'get_ipv4_range' )) {
+	/**
+	 *
+	 *get the first ip and last ip from cidr(network id and mask length)
+	 * i will integrate this function into "Rong Framework" :)
+	 * @author admin@wudimei.com
+	 * @param string $cidr 56.15.0.6/16 , [network id]/[mask length]
+	 * @return array $ipArray = array( 0 =>"first ip of the network", 1=>"last ip of the network" );
+	 *                         Each element of $ipArray's type is long int,use long2ip( $ipArray[0] ) to convert it into ip string.
+	 * example:
+	 * list( $long_startIp , $long_endIp) = get_ipv4_range( "56.15.0.6/16" );
+	 * echo "start ip:" . long2ip( $long_startIp );
+	 * echo "<br />";
+	 * echo "end ip:" . long2ip( $long_endIp );
+	 */
+
+	function get_ipv4_range($cidr)
+	{
+
+		list($ip, $mask) = explode('/', $cidr);
+
+		$maskBinStr = str_repeat("1", $mask) . str_repeat("0", 32 - $mask); //net mask binary string
+		$inverseMaskBinStr = str_repeat("0", $mask) . str_repeat("1", 32 - $mask); //inverse mask
+
+		$ipLong = ip2long($ip);
+		$ipMaskLong = bindec($maskBinStr);
+		$inverseIpMaskLong = bindec($inverseMaskBinStr);
+		$netWork = $ipLong & $ipMaskLong;
+
+		$start = $netWork + 1; //去掉网络号 ,ignore network ID(eg: 192.168.1.0)
+
+		$end = ($netWork | $inverseIpMaskLong) - 1; //去掉广播地址 ignore brocast IP(eg: 192.168.1.255)
+		return array($start, $end);
+	}
+}
+
+if ( !function_exists( 'ipv4_match_mask' ))
+{
+	function ipv4_match_mask($ip, $network)
+	{
+		// Determines if a network in the form of
+		//   192.168.17.1/16 or
+		//   127.0.0.1/255.255.255.255 or
+		//   10.0.0.1
+		// matches a given ip
+		$ipv4_arr = explode('/', $network);
+
+		if (count($ipv4_arr) == 1)
+		{
+			$ipv4_arr[1] = '255.255.255.255';
+		}
+
+		$network_long = ip2long($ipv4_arr[0]);
+
+		$x = ip2long($ipv4_arr[1]);
+		$mask =  long2ip($x) == $ipv4_arr[1] ? $x : 0xffffffff << (32 - $ipv4_arr[1]);
+		$ipv4_long = ip2long($ip);
+
+		return ($ipv4_long & $mask) == ($network_long & $mask);
+	}
+}
+
+if ( !function_exists( 'ipv4_in_range' ))
+{
+	function ipv4_in_range($ip, $range)
+	{
+		if (is_array($range))
+		{
+			foreach ($range as $iprange)
+			{
+				if (ipv4_in_range($ip, $iprange))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		// Dashed range
+		//   192.168.1.1-192.168.1.100
+		//   0.0.0.0-255.255.255.255
+		if (count($twoIps = explode('-', $range)) == 2)
+		{
+			$ip1 = ip2long($twoIps[0]);
+			$ip2 = ip2long($twoIps[1]);
+
+			return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
+		}
+
+		// Masked range or fixed IP
+		//   192.168.17.1/16 or
+		//   127.0.0.1/255.255.255.255 or
+		//   10.0.0.1
+		return ipv4_match_mask($ip, $range);
+	}
+}
