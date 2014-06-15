@@ -17,11 +17,11 @@
 
     "require": {
         "php": ">=5.4.0",
-        "illuminate/filesystem": "~4"
+        "illuminate/filesystem": "~4.0"
     },
 
     "require-dev": {
-        "mockery/mockery": "0.8.0"
+        "mockery/mockery": "~0.8"
     },
 
     "autoload": {
@@ -32,8 +32,6 @@
             "src/helpers.php"
         ]
     },
-
-    "minimum-stability": "dev",
 
     "suggest": {
         "laravel/framework": "Laravel framework."
