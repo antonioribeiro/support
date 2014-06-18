@@ -660,7 +660,7 @@ if ( !function_exists( 'ipv4_in_range' ))
 	function ipv4_in_range($ip, $range)
 	{
 		if (is_array($range))
-		{
+			{
 			foreach ($range as $iprange)
 			{
 				if (ipv4_in_range($ip, $iprange))
@@ -672,9 +672,24 @@ if ( !function_exists( 'ipv4_in_range' ))
 			return false;
 		}
 
+		// Wildcarded range
+		// 192.168.1.*
+		if ( ! str_contains($range, '-') && str_contains($range, '*'))
+		{
+			$range = str_replace('*', '0', $range) . '-' . str_replace('*', '255', $range);
+		}
+
 		// Dashed range
 		//   192.168.1.1-192.168.1.100
 		//   0.0.0.0-255.255.255.255
+		if (count($twoIps = explode('-', $range)) == 2)
+		{
+			$ip1 = ip2long($twoIps[0]);
+			$ip2 = ip2long($twoIps[1]);
+
+			return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
+		}
+
 		if (count($twoIps = explode('-', $range)) == 2)
 		{
 			$ip1 = ip2long($twoIps[0]);
