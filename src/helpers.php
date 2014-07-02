@@ -569,7 +569,7 @@ if ( ! function_exists('one_dimension_array'))
 
 }
 
-if ( !function_exists( 'array_implode' )) 
+if ( ! function_exists( 'array_implode' ))
 {
 	function array_implode( $glue, $separator, $array ) 
 	{
@@ -593,7 +593,7 @@ if ( !function_exists( 'array_implode' ))
 	}
 }
 
-if ( !function_exists( 'get_ipv4_range' )) {
+if ( ! function_exists( 'get_ipv4_range' )) {
 	/**
 	 *
 	 *get the first ip and last ip from cidr(network id and mask length)
@@ -629,7 +629,7 @@ if ( !function_exists( 'get_ipv4_range' )) {
 	}
 }
 
-if ( !function_exists( 'ipv4_match_mask' ))
+if ( ! function_exists( 'ipv4_match_mask' ))
 {
 	function ipv4_match_mask($ip, $network)
 	{
@@ -655,7 +655,7 @@ if ( !function_exists( 'ipv4_match_mask' ))
 	}
 }
 
-if ( !function_exists( 'ipv4_in_range' ))
+if ( ! function_exists( 'ipv4_in_range' ))
 {
 	function ipv4_in_range($ip, $range)
 	{
@@ -703,5 +703,21 @@ if ( !function_exists( 'ipv4_in_range' ))
 		//   127.0.0.1/255.255.255.255 or
 		//   10.0.0.1
 		return ipv4_match_mask($ip, $range);
+	}
+}
+
+if ( ! function_exists( 'in_array_wildcard' ))
+{
+	function in_array_wildcard($what, $array)
+	{
+		foreach ($array as $pattern)
+		{
+			if (\Illuminate\Support\Str::is($pattern, $what))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
