@@ -721,3 +721,19 @@ if ( ! function_exists( 'in_array_wildcard' ))
 		return false;
 	}
 }
+
+if ( ! function_exists( 'starts_with' ))
+{
+	function starts_with($haystack, $needle)
+	{
+		return \Illuminate\Support\Str::startsWith($haystack, $needle);
+	}
+}
+
+if ( ! function_exists( 'ends_with' ))
+{
+	function ends_with($haystack, $needle)
+	{
+		return \Illuminate\Support\Str::endsWith($haystack, $needle);
+	}
+}
