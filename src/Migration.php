@@ -22,7 +22,7 @@ namespace PragmaRX\Support;
 
 use Exception;
 
-abstract class Migrator
+abstract class Migration
 {
 
 	/**
@@ -186,8 +186,7 @@ abstract class Migrator
 	{
 		return
 			function_exists('app') &&
-			app() instanceof Illuminate &&
-			app()->isBooted();
+			app() instanceof \Illuminate\Foundation\Application;
 	}
 
 }
