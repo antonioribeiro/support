@@ -169,13 +169,17 @@ abstract class Migration
 	 */
 	protected function handleException($exception)
 	{
+		$previous = property_exists($exception, 'previous')
+					? $exception->previous
+					: null;
+
 		if ($exception instanceof \Illuminate\Database\QueryException)
 		{
-			throw new $exception($exception->getMessage(), $exception->getBindings(), $exception->previous);
+			throw new $exception($exception->getMessage(), $exception->getBindings(), $previous);
 		}
 		else
 		{
-			throw new $exception($exception->getMessage(), $exception->previous);
+			throw new $exception($exception->getMessage(), $previous);
 		}
 	}
 
