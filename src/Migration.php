@@ -20,9 +20,10 @@
 
 namespace PragmaRX\Support;
 
+use Illuminate\Database\Migrations\Migration as IlluminateMigration;
 use Exception;
 
-abstract class Migration
+abstract class Migration extends IlluminateMigration
 {
 
 	/**
