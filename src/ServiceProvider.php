@@ -1,5 +1,5 @@
-<?php 
-   
+<?php
+
 /**
  * Part of the Support package.
  *
@@ -20,110 +20,127 @@
  */
 
 namespace PragmaRX\Support;
- 
+
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 
+use App;
+
 abstract class ServiceProvider extends IlluminateServiceProvider {
 
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
+	/**
+	 * Indicates if loading of the provider is deferred.
+	 *
+	 * @var bool
+	 */
+	protected $defer = false;
 
-    /**
-     * This variable will be built at runtime using child variables
-     * 
-     * @var string
-     */
-    protected $packageNamespace;
+	/**
+	 * This variable will be built at runtime using child variables
+	 *
+	 * @var string
+	 */
+	protected $packageNamespace;
 
-    /**
-     * Gets the root directory of the child ServiceProvider
-     * 
-     * @return string
-     */
-    abstract protected function getRootDirectory();
+	protected $packageVendor;
 
-    /**
-     * Boot procedure in the child ServiceProvider
-     * 
-     * @return void
-     */
-    abstract protected function wakeUp();
+	protected $packageName;
 
-    /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->packageNamespace = "$this->packageVendor/$this->packageName";
+	protected $packageNameCapitalized;
 
-        $this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
+	/**
+	 * Gets the root directory of the child ServiceProvider
+	 *
+	 * @return string
+	 */
+	abstract protected function getRootDirectory();
 
-        if ( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
-        {
-            IlluminateAliasLoader::getInstance()->alias(
-                                                            $this->getConfig($this->packageName.'_alias'),
-                                                            'PragmaRX\\'.$this->packageNameCapitalized.'\Vendor\Laravel\Facade'
-                                                        );
-        }
+	/**
+	 * Boot procedure in the child ServiceProvider
+	 *
+	 * @return void
+	 */
+	abstract protected function wakeUp();
 
-        $this->wakeUp();
-    }
+	/**
+	 * Bootstrap the application events.
+	 *
+	 * @return void
+	 */
+	public function boot()
+	{
+		if ( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
+		{
+			IlluminateAliasLoader::getInstance()->alias(
+				$this->getConfig($this->packageName.'_alias'),
+				'PragmaRX\\'.$this->packageNameCapitalized.'\Vendor\Laravel\Facade'
+			);
+		}
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function preRegister()
-    {   
-        $this->registerConfig();
+		$this->wakeUp();
+	}
 
-        $this->registerFilesystem();
-    }
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function preRegister()
+	{
+		$this->registerConfig();
 
-    /**
-     * Get a configuration value
-     * 
-     * @param  string $key 
-     * @return mixed
-     */
-    public function getConfig($key)
-    {
-        return $this->app['config']->get($this->packageNamespace.'::'.$key);
-    }
+		$this->registerFilesystem();
+	}
 
-    /**
-     * Register the configuration object
-     * 
-     * @return void
-     */
-    private function registerConfig()
-    {
-        $this->app[$this->packageName.'.config'] = $this->app->share(function($app)
-        {
-            return new Config($app['config'], $this->packageNamespace);
-        });
-    }
+	/**
+	 * Get a configuration value
+	 *
+	 * @param  string $key
+	 * @return mixed
+	 */
+	public function getConfig($key)
+	{
+		return $this->app['config']->get($this->packageNamespace.'::'.$key);
+	}
 
-    /**
-     * Register the Filesystem driver used by the child ServiceProvider
-     * 
-     * @return void
-     */
-    private function registerFileSystem()
-    {
-        $this->app[$this->packageName.'.fileSystem'] = $this->app->share(function($app)
-        {
-            return new Filesystem;
-        });
-    }
+	/**
+	 * Register the configuration object
+	 *
+	 * @return void
+	 */
+	private function registerConfig()
+	{
+		/// Fix a possible Laravel Bug
+		App::register('Illuminate\Translation\TranslationServiceProvider');
 
+		$this->packageNamespace = "$this->packageVendor/$this->packageName";
+
+		$this->app['config']->package($this->packageNamespace, __DIR__.'/../../config', $this->packageNamespace);
+
+		$this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
+
+		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
+		{
+			return new Config($app['config'], $this->packageNamespace);
+		});
+	}
+
+	/**
+	 * Register the Filesystem driver used by the child ServiceProvider
+	 *
+	 * @return void
+	 */
+	private function registerFileSystem()
+	{
+		$this->app[$this->packageName.'.fileSystem'] = $this->app->share(function($app)
+		{
+			return new Filesystem;
+		});
+	}
+
+	public function loadFacade($name, $class)
+	{
+		IlluminateAliasLoader::getInstance()->alias($name, $class);
+	}
 }
