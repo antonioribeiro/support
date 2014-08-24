@@ -21,7 +21,9 @@
 namespace PragmaRX\Support;
 
 use Illuminate\Database\Migrations\Migration as IlluminateMigration;
+use Illuminate\Database\Schema\Blueprint;
 use Exception;
+use Schema;
 
 abstract class Migration extends IlluminateMigration
 {
@@ -193,7 +195,7 @@ abstract class Migration extends IlluminateMigration
 			function_exists('app') &&
 			app() instanceof \Illuminate\Foundation\Application;
 	}
-	
+
 	/**
 	 * Drop a column from a table.
 	 *
