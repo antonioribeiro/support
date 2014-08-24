@@ -193,5 +193,23 @@ abstract class Migration extends IlluminateMigration
 			function_exists('app') &&
 			app() instanceof \Illuminate\Foundation\Application;
 	}
+	
+	/**
+	 * Drop a column from a table.
+	 *
+	 * @param $tableName
+	 * @param $column
+	 */
+	public function dropColumn($tableName, $column)
+	{
+		// Check for its existence before dropping
 
+		if (Schema::hasColumn($tableName, $column))
+		{
+			Schema::table($tableName, function(Blueprint $table) use ($column)
+				{
+					$table->dropColumn($column);
+				});
+		}
+	}
 }
