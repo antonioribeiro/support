@@ -54,14 +54,20 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 *
 	 * @return string
 	 */
-	abstract protected function getRootDirectory();
+	protected function getRootDirectory()
+	{
+		return __DIR__.'/../..';
+	}
 
 	/**
-	 * Boot procedure in the child ServiceProvider
+	 * Boot for the child ServiceProvider
 	 *
 	 * @return void
 	 */
-	abstract protected function wakeUp();
+	protected function wakeUp()
+	{
+
+	}
 
 	/**
 	 * Bootstrap the application events.
