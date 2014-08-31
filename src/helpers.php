@@ -344,6 +344,21 @@ if ( ! function_exists('z'))
 			var_dump($data);
 		}
 
+		try
+		{
+			if (function_exists('app'))
+			{
+				if (app()->bound('log'))
+				{
+					app()->make('log')->info($data);
+				}
+			}
+		}
+		catch(\Exception $exception)
+		{
+
+		}
+
 		echo $cli ? "" : "</pre>";
 	}
 }
