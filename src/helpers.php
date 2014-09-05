@@ -482,7 +482,14 @@ if ( ! function_exists('is_xml'))
 {
 	function is_xml($string)
 	{
-		$doc = simplexml_load_string($string);
+		try
+		{
+			$doc = simplexml_load_string($string);
+		}
+		catch (\Exception $exception)
+		{
+			return false;
+		}
 
 		return ! empty($doc);
 	}
