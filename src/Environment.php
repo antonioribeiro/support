@@ -19,6 +19,10 @@ class Environment {
 
 			foreach(require $file as $key => $value)
 			{
+				if ($value === true)
+				{
+					$value = '(true)';
+				}
 				if ($value === false)
 				{
 					$value = '(false)';
@@ -45,6 +49,6 @@ class Environment {
 	{
 		static::load($file);
 
-		return function() { return getenv('LARAVEL_ENV'); };
+		return function() { return env('LARAVEL_ENV'); };
 	}
 }

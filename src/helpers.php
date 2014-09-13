@@ -8,7 +8,7 @@ if ( ! function_exists('env'))
 	{
 		$value = getenv($variable);
 
-		if ($value == false)
+		if ($value == false || empty($value))
 		{
 			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
 		}
@@ -17,13 +17,11 @@ if ( ! function_exists('env'))
 		{
 			$value = false;
 		}
-		else
-		if ($value === '(null)')
+		elseif ($value === '(null)')
 		{
 			$value = null;
 		}
-		else
-		if ($value === '(empty)')
+		elseif ($value === '(empty)')
 		{
 			$value = '';
 		}
