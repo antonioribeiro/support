@@ -78,7 +78,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if ( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
 		{
-			IlluminateAliasLoader::getInstance()->alias(
+			$this->registerServiceAlias(
 				$this->getConfig($this->packageName.'_alias'),
 				'PragmaRX\\'.$this->packageNameCapitalized.'\Vendor\Laravel\Facade'
 			);
@@ -148,5 +148,15 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	public function loadFacade($name, $class)
 	{
 		IlluminateAliasLoader::getInstance()->alias($name, $class);
+	}
+
+	public function registerServiceAlias($name, $class)
+	{
+		IlluminateAliasLoader::getInstance()->alias($name, $class);
+	}
+
+	public function registerServiceProvider($class)
+	{
+		$this->app->register($class);
 	}
 }
