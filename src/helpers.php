@@ -797,3 +797,25 @@ if ( ! function_exists( 'closure_dump' ))
 		return $str;
 	}
 }
+
+if ( ! function_exists( 'db_listen' ))
+{
+	function db_listen($dump = true, $log = true)
+	{
+		\DB::listen(function($sql, $bindings, $time) use ($dump, $log)
+		{
+			if ($dump)
+			{
+				var_dump($sql);
+				var_dump($bindings);
+			}
+
+			if ($log)
+			{
+				\Log::info($sql);
+				\Log::info($bindings);
+			}
+		});
+	}
+}
+
