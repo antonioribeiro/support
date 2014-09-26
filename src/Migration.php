@@ -62,32 +62,13 @@ abstract class Migration extends IlluminateMigration
 	protected $tables = array();
 
 	/**
-	 * Create a Migrator
-	 *
-	 * @throws \Exception
-	 */
-	public function __construct()
-	{
-		if ($this->isLaravel())
-		{
-			$this->manager = app()->make('db');
-
-			$this->connection = $this->manager->connection();
-
-			$this->builder = $this->connection->getSchemaBuilder();
-		}
-		else
-		{
-			throw new Exception('This migrator must be ran from inside a Laravel application.');
-		}
-	}
-
-	/**
 	 * The Laravel Migrator up() method.
 	 *
 	 */
 	public function up()
 	{
+		$this->checkConnection();
+
 		$this->executeInTransaction('migrateUp');
 	}
 
@@ -97,6 +78,8 @@ abstract class Migration extends IlluminateMigration
 	 */
 	public function down()
 	{
+		$this->checkConnection();
+
 		$this->executeInTransaction('migrateDown');
 	}
 
@@ -212,6 +195,22 @@ abstract class Migration extends IlluminateMigration
 				{
 					$table->dropColumn($column);
 				});
+		}
+	}
+
+	private function checkConnection()
+	{
+		if ($this->isLaravel())
+		{
+			$this->manager = app()->make('db');
+
+			$this->connection = $this->manager->connection();
+
+			$this->builder = $this->connection->getSchemaBuilder();
+		}
+		else
+		{
+			throw new Exception('This migrator must be ran from inside a Laravel application.');
 		}
 	}
 }
