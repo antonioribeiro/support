@@ -604,12 +604,41 @@ if ( ! function_exists( 'array_implode' ))
 		{
 			if ( is_array( $val ) )
 			{
-				$val = implode( ',', $val );
+				$val = multi_implode(',', $val );
 			}
 
 			$string[] = "{$key}{$glue}{$val}";
 		}
 		return implode( $separator, $string );
+	}
+}
+
+if ( ! function_exists( 'multi_implode' ))
+{
+	function multi_implode($glue, $array)
+	{
+		if ( ! is_array( $array ) )
+		{
+			return $array;
+		}
+
+		$ret = '';
+
+		foreach ($array as $item)
+		{
+			if (is_array($item))
+			{
+				$ret .= multi_implode($item, $glue) . $glue;
+			}
+			else
+			{
+				$ret .= $item . $glue;
+			}
+		}
+
+		$ret = substr($ret, 0, 0-strlen($glue));
+
+		return $ret;
 	}
 }
 
