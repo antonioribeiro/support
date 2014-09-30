@@ -6,14 +6,26 @@ if ( ! function_exists('env'))
 {
 	function env($variable)
 	{
-		$value = getenv($variable);
+		// If you need somehow to bypass the environment, just create this helper function
+
+		if (function_exists('bypassEnvironment') && app())
+		{
+			$app = app();
+
+			$value = bypassEnvironment($variable, $app);
+		}
+
+		if ( ! isset($value))
+		{
+			$value = getenv($variable);
+		}
 
 		if ($value == false || empty($value))
 		{
 			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
 		}
 
-		if ($value === '(false)')
+		if ($value === 'false' || $value === '(false)')
 		{
 			$value = false;
 		}
@@ -848,3 +860,14 @@ if ( ! function_exists( 'db_listen' ))
 	}
 }
 
+if ( ! function_exists( 'get_class_name_from_file' ))
+{
+	function get_class_name_from_file($file, $baseDir = '', $baseNamespace = '')
+	{
+		$class = $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
+
+		$class = $baseNamespace . substr($class, strlen($baseDir));
+
+		return str_replace('/', '\\', $class);
+	}
+}
