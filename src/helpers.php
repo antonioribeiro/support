@@ -25,7 +25,11 @@ if ( ! function_exists('env'))
 			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
 		}
 
-		if ($value === 'false' || $value === '(false)')
+		if ($value === 'true' || $value === '(true)')
+		{
+			$value = true;
+		}
+		elseif ($value === 'false' || $value === '(false)')
 		{
 			$value = false;
 		}
@@ -40,7 +44,6 @@ if ( ! function_exists('env'))
 
 		return $value;
 	}
-
 }
 
 if ( ! function_exists('getExecutablePath'))

@@ -52,13 +52,11 @@ class Environment {
 				{
 					$value = '(false)';
 				}
-				else
-				if ($value === null)
+				elseif ($value === null)
 				{
 					$value = '(null)';
 				}
-				else
-				if (empty($value))
+				elseif (empty($value))
 				{
 					$value = '(empty)';
 				}
