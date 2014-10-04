@@ -3,8 +3,11 @@
 namespace PragmaRX\Support;
 
 use Exception;
+use PragmaRX\Support\Exceptions\EnvironmentVariableNotSet;
 
 class Environment {
+
+	private static $bypassed = array();
 
 	/**
 	 * Is the .environment file loaded?
@@ -44,28 +47,81 @@ class Environment {
 
 			foreach(require $file as $key => $value)
 			{
-				if ($value === true)
-				{
-					$value = '(true)';
-				}
-				if ($value === false)
-				{
-					$value = '(false)';
-				}
-				elseif ($value === null)
-				{
-					$value = '(null)';
-				}
-				elseif (empty($value))
-				{
-					$value = '(empty)';
-				}
-
-			    putenv(sprintf('%s=%s', $key, $value));
+			    putenv(sprintf('%s=%s', $key, static::toString($value)));
 			}
 
 			static::$loaded = true;
 		}
 	}
 
+	public static function get($variable)
+	{
+		// If you need somehow to bypass the environment, just create this helper function
+
+		if (isset(static::$bypassed[$variable]))
+		{
+			$value = static::$bypassed[$variable];
+		}
+
+		if ( ! isset($value))
+		{
+			$value = getenv($variable);
+		}
+
+		if ($value == false || empty($value))
+		{
+			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+		}
+
+		return static::fromString($value);
+	}
+
+	public static function bypass($variable, $value)
+	{
+		static::$bypassed[$variable] = static::toString($value);
+	}
+
+	private static function toString($value)
+	{
+		if ($value === true)
+		{
+			$value = '(true)';
+		}
+		if ($value === false)
+		{
+			$value = '(false)';
+		}
+		elseif ($value === null)
+		{
+			$value = '(null)';
+		}
+		elseif (empty($value))
+		{
+			$value = '(empty)';
+		}
+
+		return $value;
+	}
+
+	private static function fromString($value)
+	{
+		if ($value === 'true' || $value === '(true)')
+		{
+			$value = true;
+		}
+		elseif ($value === 'false' || $value === '(false)')
+		{
+			$value = false;
+		}
+		elseif ($value === '(null)')
+		{
+			$value = null;
+		}
+		elseif ($value === '(empty)')
+		{
+			$value = '';
+		}
+
+		return $value;
+	}
 }

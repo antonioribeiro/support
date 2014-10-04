@@ -1,48 +1,13 @@
 <?php
 
+use PragmaRX\Support\Environment;
 use PragmaRX\Support\Exceptions\EnvironmentVariableNotSet;
 
 if ( ! function_exists('env'))
 {
 	function env($variable)
 	{
-		// If you need somehow to bypass the environment, just create this helper function
-
-		if (function_exists('bypassEnvironment') && app())
-		{
-			$app = app();
-
-			$value = bypassEnvironment($variable, $app);
-		}
-
-		if ( ! isset($value))
-		{
-			$value = getenv($variable);
-		}
-
-		if ($value == false || empty($value))
-		{
-			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
-		}
-
-		if ($value === 'true' || $value === '(true)')
-		{
-			$value = true;
-		}
-		elseif ($value === 'false' || $value === '(false)')
-		{
-			$value = false;
-		}
-		elseif ($value === '(null)')
-		{
-			$value = null;
-		}
-		elseif ($value === '(empty)')
-		{
-			$value = '';
-		}
-
-		return $value;
+		return Environment::get($variable);
 	}
 }
 
