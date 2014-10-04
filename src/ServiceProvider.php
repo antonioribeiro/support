@@ -92,7 +92,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function preRegister()
+	public function register()
 	{
 		$this->registerConfig();
 

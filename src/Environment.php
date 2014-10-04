@@ -45,7 +45,7 @@ class Environment {
 				throw new Exception('Environment file does not exists: '.$file);
 			}
 
-			foreach(require $file as $key => $value)
+			foreach (require $file as $key => $value)
 			{
 			    putenv(sprintf('%s=%s', $key, static::toString($value)));
 			}

@@ -128,7 +128,7 @@ abstract class Migration extends IlluminateMigration
 	 */
 	protected function dropAllTables()
 	{
-		foreach($this->tables as $table)
+		foreach ($this->tables as $table)
 		{
 			if ($this->tableExists($table))
 			{
