@@ -194,7 +194,7 @@ if ( ! function_exists('explodeTree'))
 	}
 }
 
-if ( ! function_exists('array_get'))
+if ( ! function_exists('array_get') && ! function_exists('app'))
 {
 	function array_get($array, $key, $default = null)
 	{
