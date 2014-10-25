@@ -1,7 +1,6 @@
 <?php
 
 use PragmaRX\Support\Environment;
-use PragmaRX\Support\Exceptions\EnvironmentVariableNotSet;
 
 if ( ! function_exists('env'))
 {
@@ -839,3 +838,12 @@ if ( ! function_exists( 'get_class_name_from_file' ))
 		return str_replace('/', '\\', $class);
 	}
 }
+
+if ( ! function_exists( 'flip_coin' ))
+{
+	function flip_coin()
+	{
+		return mt_rand(0, 1);
+	}
+}
+
