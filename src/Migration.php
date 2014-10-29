@@ -213,4 +213,13 @@ abstract class Migration extends IlluminateMigration
 			throw new Exception('This migrator must be ran from inside a Laravel application.');
 		}
 	}
+
+	public function drop($table)
+	{
+		if ($this->tableExists($table))
+		{
+			$this->builder->drop($table);
+		}
+	}
+
 }
