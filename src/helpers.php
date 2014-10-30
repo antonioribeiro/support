@@ -847,3 +847,11 @@ if ( ! function_exists( 'flip_coin' ))
 	}
 }
 
+if ( ! function_exists( 'csrf_token' ))
+{
+	function csrf_token()
+	{
+		return app()->make('session.store')->getToken();
+	}
+}
+
