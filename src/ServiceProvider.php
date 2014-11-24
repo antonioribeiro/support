@@ -70,6 +70,16 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	}
 
 	/**
+	 * Boot for the child ServiceProvider
+	 *
+	 * @return void
+	 */
+	protected function preRegister()
+	{
+
+	}
+
+	/**
 	 * Bootstrap the application events.
 	 *
 	 * @return void
