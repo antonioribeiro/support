@@ -49,6 +49,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	protected $packageNameCapitalized;
 
+	protected $preRegistered = false;
+
 	/**
 	 * Gets the root directory of the child ServiceProvider
 	 *
@@ -65,16 +67,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 * @return void
 	 */
 	protected function wakeUp()
-	{
-
-	}
-
-	/**
-	 * Boot for the child ServiceProvider
-	 *
-	 * @return void
-	 */
-	protected function preRegister()
 	{
 
 	}
@@ -98,15 +90,30 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	}
 
 	/**
+	 * Boot for the child ServiceProvider
+	 *
+	 * @return void
+	 */
+	protected function preRegister()
+	{
+		if ( ! $this->preRegistered)
+		{
+			$this->registerConfig();
+
+			$this->registerFilesystem();
+
+			$this->preRegistered = true;
+		}
+	}
+	
+	/**
 	 * Register the service provider.
 	 *
 	 * @return void
 	 */
 	public function register()
 	{
-		$this->registerConfig();
-
-		$this->registerFilesystem();
+		$this->preRegister();
 	}
 
 	/**
