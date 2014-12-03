@@ -855,3 +855,17 @@ if ( ! function_exists( 'csrf_token' ))
 	}
 }
 
+if ( ! function_exists( 'make_path' ))
+{
+	function make_path($parts)
+	{
+		$path = implode(DIRECTORY_SEPARATOR, $parts);
+
+		while(strpos($path, DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR) !== false)
+		{
+			$path = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
+		}
+
+		return $path;
+	}
+}
