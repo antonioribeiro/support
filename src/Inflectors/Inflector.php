@@ -9,6 +9,16 @@ class Inflector {
 		'pt' => 'PragmaRX\Support\Inflectors\PtBr',
 	];
 
+	public function inflect($word, $count)
+	{
+		if ($count > 1)
+		{
+			return $this->plural($word);
+		}
+
+		return $this->singular($word);
+	}
+
 	public static function plural($word)
 	{
 		$inflector = static::getInflector();
