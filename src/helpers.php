@@ -869,3 +869,27 @@ if ( ! function_exists( 'make_path' ))
 		return $path;
 	}
 }
+
+if ( ! function_exists( 'human_readable_size' ))
+{
+	function human_readable_size($size, $show = null, $decimals = 0)
+	{
+		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		if ( ! is_null($show) && ! in_array($show, $units)) {
+			$show = null;
+		}
+
+		$extent = 1;
+
+		foreach ($units as $rank)
+		{
+			if ((is_null($show) && ($size < $extent <<= 10)) || ($rank == $show))
+			{
+				break;
+			}
+		}
+
+		return number_format($size / ($extent >> 10), $decimals) . $rank;
+	}
+}
