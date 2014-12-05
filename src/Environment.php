@@ -4,17 +4,25 @@ namespace PragmaRX\Support;
 
 use Exception;
 use PragmaRX\Support\Exceptions\EnvironmentVariableNotSet;
+use Request;
 
 class Environment {
 
-	private static $bypassed = array();
+	const APP_ENV = 'APP_ENV';
 
 	/**
 	 * Is the .environment file loaded?
 	 *
 	 * @var bool
 	 */
-	protected static $loaded = false;
+	protected static $hasBeenLoaded = false;
+
+	/**
+	 * Bypassed environment variables?
+	 *
+	 * @var bool
+	 */
+	private static $bypassed = [];
 
 	/**
 	 * Load the environment file and return a closure to get current environment.
@@ -27,7 +35,7 @@ class Environment {
 	{
 		static::load($file);
 
-		return function() { return env('LARAVEL_ENV'); };
+		return function() { return self::name() ; };
 	}
 
 	/**
@@ -38,7 +46,7 @@ class Environment {
 	 */
 	public static function load($file = null)
 	{
-		if ( ! static::$loaded)
+		if ( ! static::$hasBeenLoaded)
 		{
 			if ( ! file_exists($file))
 			{
@@ -50,12 +58,14 @@ class Environment {
 			    putenv(sprintf('%s=%s', $key, static::toString($value)));
 			}
 
-			static::$loaded = true;
+			static::$hasBeenLoaded = true;
 		}
 	}
 
 	public static function get($variable)
 	{
+		static::setAppEnv();
+
 		// If you need somehow to bypass the environment, just create this helper function
 
 		if (isset(static::$bypassed[$variable]))
@@ -79,6 +89,8 @@ class Environment {
 	public static function bypass($variable, $value)
 	{
 		static::$bypassed[$variable] = static::toString($value);
+
+		static::setAppEnv();
 	}
 
 	private static function toString($value)
@@ -124,4 +136,31 @@ class Environment {
 
 		return $value;
 	}
+
+	public static function name()
+	{
+		$host = explode('.', Request::instance()->server->get('HTTP_HOST'))[0];
+
+		if (in_array($host, ['testing', 'local', 'development', 'production', 'staging']))
+		{
+			return $host;
+		}
+
+		if (isset(static::$bypassed[static::APP_ENV]))
+		{
+			return static::$bypassed[static::APP_ENV];
+		}
+
+		return getenv(static::APP_ENV);
+	}
+
+	private static function setAppEnv()
+	{
+		$env = static::name();
+
+		putenv(static::APP_ENV.'='.$env);
+
+		app()['env'] = $env;
+	}
+
 }
