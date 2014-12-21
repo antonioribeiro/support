@@ -893,3 +893,21 @@ if ( ! function_exists( 'human_readable_size' ))
 		return number_format($size / ($extent >> 10), $decimals) . $rank;
 	}
 }
+
+if ( ! function_exists( 'call' ))
+{
+	function call($className, $method = null, $arguments = [])
+	{
+		if ( ! $method)
+		{
+			list($className, $method) = explode('::', $className);
+		}
+
+		if ( ! is_array($arguments))
+		{
+			$arguments = [$arguments];
+		}
+
+		return call_user_func_array([$className, $method], $arguments);
+	}
+}
