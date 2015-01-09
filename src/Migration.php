@@ -192,9 +192,9 @@ abstract class Migration extends IlluminateMigration
 		if (Schema::hasColumn($tableName, $column))
 		{
 			Schema::table($tableName, function(Blueprint $table) use ($column)
-				{
-					$table->dropColumn($column);
-				});
+			{
+				$table->dropColumn($column);
+			});
 		}
 	}
 
