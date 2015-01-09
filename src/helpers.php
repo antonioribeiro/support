@@ -911,3 +911,44 @@ if ( ! function_exists( 'call' ))
 		return call_user_func_array([$className, $method], $arguments);
 	}
 }
+
+if ( ! function_exists( 'to_carbon' ))
+{
+	function to_carbon($value, $alternateFormat = null, $defaultTime = null)
+	{
+		// If it's already a Carbon object, return it.
+		if ($value instanceof Carbon\Carbon)
+		{
+			return $value;
+		}
+
+		// If this value is an integer, we will assume it is a UNIX timestamp's value
+		// and format a Carbon object from this timestamp. This allows flexibility
+		// when defining your date fields as they might be UNIX timestamps here.
+		if (is_numeric($value))
+		{
+			return Carbon\Carbon::createFromTimestamp($value);
+		}
+
+		$value = str_replace('/', '-', $value);
+
+		$value = str_replace('\\', '-', $value);
+
+		// Try to convert it using strtotime().
+		if (($date = strtotime($value)) !== false)
+		{
+			return Carbon\Carbon::createFromTimestamp($date);
+		}
+
+		// Finally, we will just assume this date is in the format passed as parameter
+		// or we will try to use a default format.
+		elseif ( ! $value instanceof DateTime)
+		{
+			$alternateFormat = $alternateFormat ?: 'Y-m-d H:i:s';
+
+			return Carbon\Carbon::createFromFormat($alternateFormat, $value);
+		}
+
+		return Carbon\Carbon::instance($value);
+	}
+}
