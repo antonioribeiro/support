@@ -839,6 +839,76 @@ if ( ! function_exists( 'get_class_name_from_file' ))
 	}
 }
 
+if ( ! function_exists( 'get_class_and_namespace' ))
+{
+	function get_class_and_namespace($file, $asString = false)
+	{
+		$fp = fopen($file, 'r');
+
+		$class = $namespace = $buffer = '';
+
+		$i = 0;
+
+		while (!$class)
+		{
+		    if (feof($fp))
+		    {
+			    break;
+		    }
+
+		    $buffer .= fread($fp, 512);
+		    $tokens = @token_get_all($buffer);
+
+		    if (strpos($buffer, '{') === false)
+		    {
+			    continue;
+		    }
+
+		    for (;$i<count($tokens);$i++)
+		    {
+		        if ($tokens[$i][0] === T_NAMESPACE)
+		        {
+		            for ($j=$i+1;$j<count($tokens); $j++)
+		            {
+		                if ($tokens[$j][0] === T_STRING)
+		                {
+		                     $namespace .= '\\'.$tokens[$j][1];
+		                }
+		                elseif ($tokens[$j] === '{' || $tokens[$j] === ';')
+		                {
+		                     break;
+		                }
+		            }
+		        }
+
+		        if ($tokens[$i][0] === T_CLASS)
+		        {
+		            for ($j=$i+1;$j<count($tokens);$j++)
+		            {
+		                if ($tokens[$j] === '{')
+		                {
+		                    $class = $tokens[$i+2][1];
+		                }
+		            }
+		        }
+		    }
+		}
+
+		if ($namespace)
+		{
+			$namespace = substr($namespace, 1);
+		}
+
+		if ($asString)
+		{
+			return $namespace ? $namespace . '\\' . $class : $class;
+		}
+
+		return [$class, $namespace];
+	}
+}
+
+
 if ( ! function_exists( 'flip_coin' ))
 {
 	function flip_coin()
@@ -950,5 +1020,56 @@ if ( ! function_exists( 'to_carbon' ))
 		}
 
 		return Carbon\Carbon::instance($value);
+	}
+}
+
+if ( ! function_exists( 'get_current_namespaces' ))
+{
+	function get_current_namespaces()
+	{
+		$namespaces = [];
+
+		foreach(get_declared_classes() as $name)
+		{
+		    if (($pos = strrpos($name, '\\')) !== false)
+		    {
+			    $namespace = substr($name, 0, $pos);
+
+			    $namespaces[$namespace] = $namespace;
+		    }
+		}
+
+		return $namespaces;
+	}
+}
+
+if ( ! function_exists( 'get_file_namespace' ))
+{
+	function get_file_namespace($filePath)
+	{
+		$namespaces = get_current_namespaces();
+
+		include $filePath;
+
+		$newNamespaces = get_current_namespaces();
+
+		$diff = array_diff_assoc($newNamespaces, $namespaces);
+
+		if  ( ! $diff)
+		{
+			return null;
+		}
+
+		$contents = file_get_contents($filePath);
+
+		foreach($diff as $namespace)
+		{
+			if (strpos($contents, 'namespace '.$namespace) !== false)
+			{
+				return $namespace;
+			}
+		}
+
+		return false;
 	}
 }
