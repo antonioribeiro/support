@@ -78,13 +78,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function boot()
 	{
-		if ( $this->app['config']->get($this->packageNamespace.'::create_'.$this->packageName.'_alias') )
-		{
-			$this->registerServiceAlias(
-				$this->getConfig($this->packageName.'_alias'),
-				'PragmaRX\\'.$this->packageNameCapitalized.'\Vendor\Laravel\Facade'
-			);
-		}
+		$this->registerNamespace();
+
+		$this->publishConfig();
 
 		$this->wakeUp();
 	}
@@ -124,7 +120,12 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function getConfig($key)
 	{
-		return $this->app['config']->get($this->packageNamespace.'::'.$key);
+		if ($this->laravel4())
+		{
+			return $this->app['config']->get($this->packageNamespace.'::'.$key);
+		}
+
+		return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
 	}
 
 	/**
@@ -134,18 +135,19 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerConfig()
 	{
-		/// Fix a possible Laravel Bug
-		App::register('Illuminate\Translation\TranslationServiceProvider');
+		if ($this->laravel4())
+		{
+			/// Fix a possible Laravel Bug
+			App::register('Illuminate\Translation\TranslationServiceProvider');
 
-		$this->packageNamespace = "$this->packageVendor/$this->packageName";
+			$this->app['config']->package($this->packageNamespace, __DIR__.'/../../config', $this->packageNamespace);
 
-		$this->app['config']->package($this->packageNamespace, __DIR__.'/../../config', $this->packageNamespace);
-
-		$this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
+			$this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
+		}
 
 		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
 		{
-			return new Config($app['config'], $this->packageNamespace);
+			return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.config.'));
 		});
 	}
 
@@ -176,4 +178,30 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		$this->app->register($class);
 	}
+
+	private function publishConfig()
+	{
+		$this->publishes([
+			$this->getStubConfigPath()
+				=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
+		]);
+	}
+
+	private function laravel4()
+	{
+		return $this->app->version() < '5.0.0';
+	}
+
+	private function registerNamespace()
+	{
+		if ($this->laravel4())
+		{
+			$this->packageNamespace = "$this->packageVendor/$this->packageName";
+		}
+		else
+		{
+			$this->packageNamespace = "$this->packageVendor.$this->packageName";
+		}
+	}
+
 }
