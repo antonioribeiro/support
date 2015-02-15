@@ -27,6 +27,8 @@ class Config {
 
     protected $config;
 
+    private $namespace;
+
     public function __construct(IlluminateConfig $config, $namespace)
     {
         $this->config = $config;
@@ -36,7 +38,7 @@ class Config {
 
     public function get($key, $default = null)
     {
-        return $this->config->get($this->namespace.'::'.$key, $default);
+        return $this->config->get($this->namespace.$key, $default);
     }
 
 }
