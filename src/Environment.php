@@ -54,7 +54,7 @@ class Environment {
 		}
 	}
 
-	public static function get($variable)
+	public static function get($variable, $default = '#default#')
 	{
 		// If you need somehow to bypass the environment, just create this helper function
 
@@ -70,7 +70,12 @@ class Environment {
 
 		if ($value == false || empty($value))
 		{
-			throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+			if ($default === '#default#')
+			{
+				throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+			}
+
+			return $default;
 		}
 
 		return static::fromString($value);
