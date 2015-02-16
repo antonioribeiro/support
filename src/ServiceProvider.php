@@ -23,7 +23,6 @@ namespace PragmaRX\Support;
 
 use App;
 use Illuminate\Foundation\Application as Laravel;
-use Symfony\Component\Debug\Exception\FatalErrorException;
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
