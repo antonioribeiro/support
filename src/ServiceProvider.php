@@ -125,7 +125,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			return $this->app['config']->get($this->packageNamespace.'::'.$key);
 		}
 
-		return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
+		// Waiting for https://github.com/laravel/framework/pull/7440
+		// return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
+
+		return $this->app['config']->get("{$this->packageName}.{$key}");
 	}
 
 	/**
@@ -147,7 +150,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
 		{
-			return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.config.'));
+			// Waiting for https://github.com/laravel/framework/pull/7440
+			// return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.config.'));
+
+			return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.'));
 		});
 	}
 
@@ -181,9 +187,15 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	private function publishConfig()
 	{
+		// Waiting for https://github.com/laravel/framework/pull/7440
+		//	$this->publishes([
+		//		$this->getStubConfigPath()
+		//			=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
+		//	]);
+
 		$this->publishes([
 			$this->getStubConfigPath()
-				=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
+				=> config_path($this->packageName.'.php'),
 		]);
 	}
 
@@ -200,7 +212,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		}
 		else
 		{
-			$this->packageNamespace = "$this->packageVendor.$this->packageName";
+			// Waiting for https://github.com/laravel/framework/pull/7440
+			// $this->packageNamespace = "$this->packageVendor.$this->packageName";
+
+			$this->packageNamespace = $this->packageName;
 		}
 	}
 
