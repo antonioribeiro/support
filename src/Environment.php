@@ -4,7 +4,6 @@ namespace PragmaRX\Support;
 
 use Exception;
 use PragmaRX\Support\Exceptions\EnvironmentVariableNotSet;
-use Request;
 
 class Environment {
 
@@ -144,7 +143,7 @@ class Environment {
 
 	public static function name()
 	{
-		$host = explode('.', Request::instance()->server->get('HTTP_HOST'))[0];
+		$host = explode('.', app()['request']->server->get('HTTP_HOST'))[0];
 
 		if (in_array($host, ['testing', 'local', 'development', 'production', 'staging']))
 		{
