@@ -21,11 +21,11 @@
 
 namespace PragmaRX\Support;
 
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
-
-use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
-
 use App;
+use Illuminate\Foundation\Application as Laravel;
+use Symfony\Component\Debug\Exception\FatalErrorException;
+use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
+use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 abstract class ServiceProvider extends IlluminateServiceProvider {
 
@@ -78,8 +78,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->registerNamespace();
-
 		$this->publishConfig();
 
 		$this->wakeUp();
@@ -94,6 +92,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if ( ! $this->preRegistered)
 		{
+			$this->registerNamespace();
+
 			$this->registerConfig();
 
 			$this->registerFilesystem();
@@ -120,7 +120,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function getConfig($key)
 	{
-		if ($this->laravel4())
+		if ( ! $this->laravel5())
 		{
 			return $this->app['config']->get($this->packageNamespace.'::'.$key);
 		}
@@ -138,7 +138,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerConfig()
 	{
-		if ($this->laravel4())
+		if ( ! $this->laravel5())
 		{
 			/// Fix a possible Laravel Bug
 			App::register('Illuminate\Translation\TranslationServiceProvider');
@@ -151,9 +151,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
 		{
 			// Waiting for https://github.com/laravel/framework/pull/7440
-			// return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.config.'));
+			// return new Config($app['config'], $this->packageNamespace . ( ! $this->laravel5() ? '::' : '.config.'));
 
-			return new Config($app['config'], $this->packageNamespace . ($this->laravel4() ? '::' : '.'));
+			return new Config($app['config'], $this->packageNamespace . ( ! $this->laravel5() ? '::' : '.'));
 		});
 	}
 
@@ -193,20 +193,23 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		//			=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
 		//	]);
 
-		$this->publishes([
-			$this->getStubConfigPath()
-				=> config_path($this->packageName.'.php'),
-		]);
+		if ($this->laravel5())
+		{
+			$this->publishes([
+				$this->getStubConfigPath()
+					=> config_path($this->packageName.'.php'),
+			]);
+		}
 	}
 
-	private function laravel4()
+	private function laravel5()
 	{
-		return $this->app->version() < '5.0.0';
+		return Laravel::VERSION >= '5.0.0';
 	}
 
 	private function registerNamespace()
 	{
-		if ($this->laravel4())
+		if ( ! $this->laravel5())
 		{
 			$this->packageNamespace = "$this->packageVendor/$this->packageName";
 		}
