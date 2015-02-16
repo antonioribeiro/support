@@ -4,9 +4,9 @@ use PragmaRX\Support\Environment;
 
 if ( ! function_exists('env'))
 {
-	function env($variable)
+	function env($variable, $default = '#default#')
 	{
-		return Environment::get($variable);
+		return Environment::get($variable, $default);
 	}
 }
 

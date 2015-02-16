@@ -17,11 +17,7 @@
 
     "require": {
         "php": ">=5.4.0",
-        "illuminate/filesystem": "~4.0 | ~5.0"
-    },
-
-    "require-dev": {
-        "mockery/mockery": "~0.8"
+        "illuminate/filesystem": "~4.0|~5.0"
     },
 
     "autoload": {
@@ -35,5 +31,11 @@
 
     "suggest": {
         "laravel/framework": "Laravel framework."
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.5.x-dev"
+        }
     }
 }
