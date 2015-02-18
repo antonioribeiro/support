@@ -49,7 +49,14 @@ class Environment {
 		{
 			if ( ! file_exists($file))
 			{
-				throw new Exception('Environment file does not exists: '.$file);
+				if (static::logAvailable())
+				{
+					throw new Exception('Environment file does not exists: '.$file);
+				}
+				else
+				{
+					dd("Environment file does not exists: $file");
+				}
 			}
 
 			foreach (require $file as $key => $value)
@@ -61,6 +68,12 @@ class Environment {
 		}
 	}
 
+	/**
+	 * @param $variable
+	 * @param string $default
+	 * @return bool|null|string
+	 * @throws EnvironmentVariableNotSet
+	 */
 	public static function get($variable, $default = '#default#')
 	{
 		static::setAppEnv();
@@ -81,7 +94,14 @@ class Environment {
 		{
 			if ($default === '#default#')
 			{
-				throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+				if (static::logAvailable())
+				{
+					throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+				}
+				else
+				{
+					dd("Environment variable not set: $variable");
+				}
 			}
 
 			return $default;
@@ -143,7 +163,7 @@ class Environment {
 
 	public static function name()
 	{
-		$host = explode('.', app()['request']->server->get('HTTP_HOST'))[0];
+		$host = explode('.', static::getHostname())[0];
 
 		if (in_array($host, ['testing', 'local', 'development', 'production', 'staging']))
 		{
@@ -165,6 +185,21 @@ class Environment {
 		putenv(static::APP_ENV.'='.$env);
 
 		app()['env'] = $env;
+	}
+
+	private static function logAvailable()
+	{
+		return app()->bound('log');
+	}
+
+	private static function getHostname()
+	{
+		if (app()->bound('request'))
+		{
+			return app()['request']->server->get('HTTP_HOST');
+		}
+
+		return 'nohost';
 	}
 
 }
