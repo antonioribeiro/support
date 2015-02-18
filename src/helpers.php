@@ -1,6 +1,7 @@
 <?php
 
 use PragmaRX\Support\Environment;
+use Illuminate\Support\Debug\Dumper;
 
 if ( ! function_exists('env'))
 {
@@ -12,7 +13,7 @@ if ( ! function_exists('env'))
 
 if ( ! function_exists('getExecutablePath'))
 {
-	function getExecutablePath($cmd) 
+	function getExecutablePath($cmd)
 	{
 	    return trim(shell_exec("which $cmd"));
 	}
@@ -20,10 +21,10 @@ if ( ! function_exists('getExecutablePath'))
 
 if ( ! function_exists('commandExists'))
 {
-	function commandExists($cmd) 
+	function commandExists($cmd)
 	{
 	    $returnVal = trim(getExecutablePath("which $cmd"));
-	    
+
 	    return (empty($returnVal) ? false : true);
 	}
 }
@@ -212,7 +213,7 @@ if ( ! function_exists('array_get') && ! function_exists('app'))
 		}
 
 		return $array;
-	}	
+	}
 }
 
 if ( ! function_exists('value'))
@@ -306,20 +307,9 @@ if ( ! function_exists('d'))
 
 if ( ! function_exists('z'))
 {
-	function z($data = '')
+	function z()
 	{
-		$cli = php_sapi_name() === 'cli';
-
-		echo $cli ? "" : "<pre>";
-
-		if (is_string($data))
-		{
-			echo htmlspecialchars($data) . ($cli ? "\n" : "<br>");
-		}
-		else
-		{
-			var_dump($data);
-		}
+		array_map(function($x) { (new Dumper)->dump($x); }, func_get_args());
 
 		try
 		{
@@ -335,8 +325,6 @@ if ( ! function_exists('z'))
 		{
 
 		}
-
-		echo $cli ? "" : "</pre>";
 	}
 }
 
@@ -556,7 +544,7 @@ if ( ! function_exists('array_equal')) {
 
 }
 
-if ( ! function_exists('one_dimension_array')) 
+if ( ! function_exists('one_dimension_array'))
 {
 
 	function one_dimension_array($array)
@@ -570,16 +558,16 @@ if ( ! function_exists('one_dimension_array'))
 
 if ( ! function_exists( 'array_implode' ))
 {
-	function array_implode( $glue, $separator, $array ) 
+	function array_implode( $glue, $separator, $array )
 	{
 		if ( ! is_array( $array ) )
 		{
 			return $array;
 		}
-	 
+
 		$string = array();
-	 
-		foreach ( $array as $key => $val ) 
+
+		foreach ( $array as $key => $val )
 		{
 			if ( is_array( $val ) )
 			{
