@@ -2,6 +2,7 @@
 
 use PragmaRX\Support\Environment;
 use Illuminate\Support\Debug\Dumper;
+use Illuminate\Foundation\Application as Laravel;
 
 if ( ! function_exists('env'))
 {
@@ -1059,5 +1060,13 @@ if ( ! function_exists( 'get_file_namespace' ))
 		}
 
 		return false;
+	}
+}
+
+if ( ! function_exists( 'isLaravel5' ))
+{
+	function isLaravel5()
+	{
+		return Laravel::VERSION >= '5.0.0';
 	}
 }

@@ -22,7 +22,6 @@
 namespace PragmaRX\Support;
 
 use App;
-use Illuminate\Foundation\Application as Laravel;
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
@@ -119,7 +118,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function getConfig($key)
 	{
-		if ( ! $this->laravel5())
+		if ( ! isLaravel5())
 		{
 			return $this->app['config']->get($this->packageNamespace.'::'.$key);
 		}
@@ -137,7 +136,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerConfig()
 	{
-		if ( ! $this->laravel5())
+		if ( ! isLaravel5())
 		{
 			/// Fix a possible Laravel Bug
 			App::register('Illuminate\Translation\TranslationServiceProvider');
@@ -150,9 +149,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
 		{
 			// Waiting for https://github.com/laravel/framework/pull/7440
-			// return new Config($app['config'], $this->packageNamespace . ( ! $this->laravel5() ? '::' : '.config.'));
+			// return new Config($app['config'], $this->packageNamespace . ( ! isLaravel5() ? '::' : '.config.'));
 
-			return new Config($app['config'], $this->packageNamespace . ( ! $this->laravel5() ? '::' : '.'));
+			return new Config($app['config'], $this->packageNamespace . ( ! isLaravel5() ? '::' : '.'));
 		});
 	}
 
@@ -192,7 +191,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		//			=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
 		//	]);
 
-		if ($this->laravel5())
+		if (isLaravel5())
 		{
 			$this->publishes([
 				$this->getStubConfigPath()
@@ -201,14 +200,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		}
 	}
 
-	private function laravel5()
-	{
-		return Laravel::VERSION >= '5.0.0';
-	}
-
 	private function registerNamespace()
 	{
-		if ( ! $this->laravel5())
+		if ( ! isLaravel5())
 		{
 			$this->packageNamespace = "$this->packageVendor/$this->packageName";
 		}
