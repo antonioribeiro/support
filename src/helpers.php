@@ -1,7 +1,7 @@
 <?php
 
 use PragmaRX\Support\Environment;
-use Illuminate\Support\Debug\Dumper;
+use PragmaRX\Support\Debug\Dumper;
 use Illuminate\Foundation\Application as Laravel;
 
 if ( ! function_exists('env'))
