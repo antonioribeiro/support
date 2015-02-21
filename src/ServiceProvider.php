@@ -196,12 +196,12 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			$this->publishes([
 				$this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'
 					=> config_path($this->packageName.'.php'),
-			]);
+			], 'config');
 
 			$this->publishes([
                  $this->getPackageDir().DIRECTORY_SEPARATOR.'migrations'
-                    => base_path(DIRECTORY_SEPARATOR.'migrations'),
-			]);
+                    => base_path('database'.DIRECTORY_SEPARATOR.'migrations'),
+			], 'migrations');
 		}
 	}
 
