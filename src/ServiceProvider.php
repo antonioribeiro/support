@@ -194,8 +194,13 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		if (isLaravel5())
 		{
 			$this->publishes([
-				$this->getStubConfigPath()
+				$this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'
 					=> config_path($this->packageName.'.php'),
+			]);
+
+			$this->publishes([
+                 $this->getPackageDir().DIRECTORY_SEPARATOR.'migrations'
+                    => base_path(DIRECTORY_SEPARATOR.'migrations'),
 			]);
 		}
 	}
