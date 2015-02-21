@@ -41,4 +41,9 @@ class Config {
         return $this->config->get($this->namespace.$key, $default);
     }
 
+    public function set($key, $value = null)
+    {
+        $this->config->set($this->namespace.'::'.$key, $value);
+    }
+
 }
