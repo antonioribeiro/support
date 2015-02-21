@@ -60,16 +60,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	}
 
 	/**
-	 * Boot for the child ServiceProvider
-	 *
-	 * @return void
-	 */
-	protected function wakeUp()
-	{
-
-	}
-
-	/**
 	 * Bootstrap the application events.
 	 *
 	 * @return void
@@ -77,8 +67,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	public function boot()
 	{
 		$this->publishConfig();
-
-		$this->wakeUp();
 	}
 
 	/**
