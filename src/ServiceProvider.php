@@ -66,7 +66,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->publishConfig();
+		$this->publishFiles();
+
+		$this->loadViews();
 	}
 
 	/**
@@ -78,6 +80,8 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if ( ! $this->preRegistered)
 		{
+			$this->mergeConfig();
+
 			$this->registerNamespace();
 
 			$this->registerConfig();
@@ -171,7 +175,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		$this->app->register($class);
 	}
 
-	private function publishConfig()
+	private function publishFiles()
 	{
 		// Waiting for https://github.com/laravel/framework/pull/7440
 		//	$this->publishes([
@@ -183,14 +187,30 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		{
 			if (file_exists($configFile = $this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
 			{
-				$this->publishes([$configFile => config_path($this->packageName.'.php')], 'config');
+				$this->publishes(
+					[ $configFile => config_path($this->packageName.'.php') ],
+					'config'
+				);
 			}
 
 			if (file_exists($migrationsPath = $this->getPackageDir().DIRECTORY_SEPARATOR.'migrations'))
 			{
 				$this->publishes(
-					[$migrationsPath => base_path('database'.DIRECTORY_SEPARATOR.'migrations')],
+					[ $migrationsPath => base_path('database'.DIRECTORY_SEPARATOR.'migrations') ],
 					'migrations'
+				);
+			}
+		}
+	}
+
+	private function mergeConfig()
+	{
+		if (isLaravel5())
+		{
+			if (file_exists($configFile = $this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
+			{
+				$this->mergeConfigFrom(
+					$configFile, $this->packageName
 				);
 			}
 		}
@@ -208,6 +228,14 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			// $this->packageNamespace = "$this->packageVendor.$this->packageName";
 
 			$this->packageNamespace = $this->packageName;
+		}
+	}
+
+	private function loadViews()
+	{
+		if (file_exists($viewsFolder = $this->getPackageDir().DIRECTORY_SEPARATOR.'views'))
+		{
+			$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
 		}
 	}
 
