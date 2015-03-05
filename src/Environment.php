@@ -196,6 +196,11 @@ class Environment {
 	{
 		if (app()->bound('request'))
 		{
+			if (app()['request'] instanceof ArgvInput)
+			{
+				return 'localhost';
+			}
+
 			return app()['request']->server->get('HTTP_HOST');
 		}
 
