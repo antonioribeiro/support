@@ -177,12 +177,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	private function publishFiles()
 	{
-		// Waiting for https://github.com/laravel/framework/pull/7440
-		//	$this->publishes([
-		//		$this->getStubConfigPath()
-		//			=> config_path($this->packageVendor.DIRECTORY_SEPARATOR.$this->packageName.DIRECTORY_SEPARATOR.'config.php'),
-		//	]);
-
 		if (isLaravel5())
 		{
 			if (file_exists($configFile = $this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
