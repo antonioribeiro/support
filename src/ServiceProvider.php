@@ -240,6 +240,14 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 				$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
 			}
 		}
+		else
+		{
+			$this->app->make('view')->addNamespace
+			(
+					$this->packageNamespace,
+					$this->getRootDirectory().'/views'
+			);
+		}
 	}
 
 }
