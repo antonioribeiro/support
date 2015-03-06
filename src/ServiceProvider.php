@@ -233,9 +233,12 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	private function loadViews()
 	{
-		if (file_exists($viewsFolder = $this->getPackageDir().DIRECTORY_SEPARATOR.'views'))
+		if (isLaravel5())
 		{
-			$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
+			if (file_exists($viewsFolder = $this->getPackageDir() . DIRECTORY_SEPARATOR . 'views'))
+			{
+				$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
+			}
 		}
 	}
 
