@@ -34,7 +34,13 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	protected $defer = false;
 
-	protected $preRegistered = false;
+	/**
+	 * Is this service provider registered?
+	 *
+	 * @return string
+	 */
+
+	protected $registered = false;
 
 	/**
 	 * Get the ServiceProvider root directory
@@ -63,7 +69,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	protected function preRegister()
 	{
-		if ( ! $this->preRegistered)
+		if ( ! $this->registered)
 		{
 			$this->mergeConfig();
 
@@ -73,7 +79,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 			$this->registerFilesystem();
 
-			$this->preRegistered = true;
+			$this->registered = true;
 		}
 	}
 	
