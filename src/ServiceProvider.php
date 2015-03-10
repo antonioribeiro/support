@@ -48,7 +48,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 * @return string
 	 */
 
-	abstract protected function getRootDirectory();
+	function getRootDirectory()
+	{
+		return $this->getPackageDir();
+	}
 
 	/**
 	 * Bootstrap the application events.
