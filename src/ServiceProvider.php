@@ -48,7 +48,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 * @return string
 	 */
 
-	function getRootDirectory()
+	protected function getRootDirectory()
 	{
 		return $this->getPackageDir();
 	}
