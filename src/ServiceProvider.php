@@ -99,17 +99,21 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 * @param  string $key
 	 * @return mixed
 	 */
-	public function getConfig($key)
+	public function getConfig($key = null)
 	{
 		if ( ! isLaravel5())
 		{
-			return $this->app['config']->get($this->packageNamespace.'::'.$key);
+			$key = $this->packageNamespace . ($key ? '::'.$key : '');
+
+			return $this->app['config']->get($key);
 		}
 
 		// Waiting for https://github.com/laravel/framework/pull/7440
 		// return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
 
-		return $this->app['config']->get("{$this->packageName}.{$key}");
+		$key = $this->packageName . ($key ? '.'.$key : '');
+
+		return $this->app['config']->get($key);
 	}
 
 	/**
