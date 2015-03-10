@@ -34,19 +34,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	protected $defer = false;
 
-	/**
-	 * This variable will be built at runtime using child variables
-	 *
-	 * @var string
-	 */
-	protected $packageNamespace;
-
-	protected $packageVendor;
-
-	protected $packageName;
-
-	protected $packageNameCapitalized;
-
 	protected $preRegistered = false;
 
 	/**
