@@ -50,14 +50,12 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	protected $preRegistered = false;
 
 	/**
-	 * Gets the root directory of the child ServiceProvider
+	 * Get the ServiceProvider root directory
 	 *
 	 * @return string
 	 */
-	protected function getRootDirectory()
-	{
-		return __DIR__.'/../..';
-	}
+
+	abstract protected function getRootDirectory();
 
 	/**
 	 * Bootstrap the application events.
@@ -179,7 +177,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if (isLaravel5())
 		{
-			if (file_exists($configFile = $this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
+			if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
 			{
 				$this->publishes(
 					[ $configFile => config_path($this->packageName.'.php') ],
@@ -187,7 +185,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 				);
 			}
 
-			if (file_exists($migrationsPath = $this->getPackageDir().DIRECTORY_SEPARATOR.'migrations'))
+			if (file_exists($migrationsPath = $this->getRootDirectory().DIRECTORY_SEPARATOR.'migrations'))
 			{
 				$this->publishes(
 					[ $migrationsPath => base_path('database'.DIRECTORY_SEPARATOR.'migrations') ],
@@ -201,7 +199,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if (isLaravel5())
 		{
-			if (file_exists($configFile = $this->getPackageDir().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
+			if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
 			{
 				$this->mergeConfigFrom(
 					$configFile, $this->packageName
@@ -229,7 +227,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if (isLaravel5())
 		{
-			if (file_exists($viewsFolder = $this->getPackageDir() . DIRECTORY_SEPARATOR . 'views'))
+			if (file_exists($viewsFolder = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'views'))
 			{
 				$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
 			}
