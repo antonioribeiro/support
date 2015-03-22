@@ -109,9 +109,11 @@ class PhpSession
 		$_SESSION[$this->makeNamespace($namespace)] = $value;
 	}
 
-	public function regenerate($destroy = false)
+	public function regenerate($destroy = true)
 	{
 		session_regenerate_id($destroy);
+
+		return $this->getId();
 	}
 
 	public function status()
