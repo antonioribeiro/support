@@ -2,7 +2,6 @@
 
 namespace PragmaRX\Support;
 
-use App;
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
@@ -110,7 +109,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		if ( ! isLaravel5())
 		{
 			/// Fix a possible Laravel Bug
-			App::register('Illuminate\Translation\TranslationServiceProvider');
+			$this->app->register('Illuminate\Translation\TranslationServiceProvider');
 
 			$this->app['config']->package($this->packageNamespace, __DIR__.'/../../config', $this->packageNamespace);
 
@@ -137,11 +136,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		{
 			return new Filesystem;
 		});
-	}
-
-	public function loadFacade($name, $class)
-	{
-		IlluminateAliasLoader::getInstance()->alias($name, $class);
 	}
 
 	public function registerServiceAlias($name, $class)
