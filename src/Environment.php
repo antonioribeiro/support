@@ -49,14 +49,14 @@ class Environment {
 		{
 			if ( ! file_exists($file))
 			{
-				if (static::logAvailable())
-				{
-					throw new Exception('Environment file does not exists: '.$file);
-				}
-				else
-				{
-					dd("Environment file does not exists: $file");
-				}
+				// if (static::logAvailable())
+				// {
+				// 	// throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+				// }
+				// else
+				// {
+				// 	dd("Environment variable not set: $variable");
+				// }
 			}
 
 			foreach (require $file as $key => $value)
