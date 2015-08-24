@@ -49,14 +49,7 @@ class Environment {
 		{
 			if ( ! file_exists($file))
 			{
-				// if (static::logAvailable())
-				// {
-				// 	// throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
-				// }
-				// else
-				// {
-				// 	dd("Environment variable not set: $variable");
-				// }
+				static::raiseEnvironmentVariableNotSet();
 			}
 
 			foreach (require $file as $key => $value)
@@ -94,14 +87,7 @@ class Environment {
 		{
 			if ($default === '#default#')
 			{
-				if (static::logAvailable())
-				{
-					throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
-				}
-				else
-				{
-					dd("Environment variable not set: $variable");
-				}
+				static::raiseEnvironmentVariableNotSet();
 			}
 
 			return $default;
@@ -205,6 +191,20 @@ class Environment {
 		}
 
 		return 'nohost';
+	}
+
+	private static function raiseEnvironmentVariableNotSet()
+	{
+		// Temporarily disabled. Let's find a better way to inform?
+		//
+		// if (static::logAvailable())
+		// {
+		// 	// throw new EnvironmentVariableNotSet("Environment variable not set: $variable");
+		// }
+		// else
+		// {
+		// 	dd("Environment variable not set: $variable");
+		// }
 	}
 
 }
