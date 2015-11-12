@@ -52,7 +52,8 @@ class Environment {
 				static::raiseEnvironmentVariableNotSet();
 			}
 
-			foreach (require $file as $key => $value)
+			$data = require $file;
+			foreach ($data as $key => $value)
 			{
 			    putenv(sprintf('%s=%s', $key, static::toString($value)));
 			}
