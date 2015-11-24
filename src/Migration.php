@@ -186,7 +186,7 @@ abstract class Migration extends IlluminateMigration
 		{
 			$this->manager = app()->make('db');
 
-			$this->connection = $this->manager->connection();
+			$this->connection = $this->connection ?: $this->manager->connection();
 
 			$this->builder = $this->connection->getSchemaBuilder();
 		}
