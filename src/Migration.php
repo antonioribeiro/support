@@ -180,13 +180,16 @@ abstract class Migration extends IlluminateMigration
 		}
 	}
 
-	private function checkConnection()
+	protected function checkConnection()
 	{
 		if ($this->isLaravel())
 		{
-			$this->manager = app()->make('db');
+            if ( ! $this->connection)
+            {
+                $this->manager = app()->make('db');
 
-			$this->connection = $this->connection ?: $this->manager->connection();
+                $this->connection = $this->manager->connection();
+            }
 
 			$this->builder = $this->connection->getSchemaBuilder();
 		}
