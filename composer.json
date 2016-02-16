@@ -18,7 +18,7 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/filesystem": "~4.0|~5.0",
-        "symfony/var-dumper": "~2.6"
+        "symfony/var-dumper": "~2.6|~3.0"
     },
 
     "autoload": {
