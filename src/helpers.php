@@ -4,9 +4,9 @@ use PragmaRX\Support\Environment;
 use PragmaRX\Support\Debug\Dumper;
 use Illuminate\Foundation\Application as Laravel;
 
-if ( ! function_exists('env'))
+if ( ! function_exists('envRaise'))
 {
-	function env($variable, $default = '#default#')
+	function envRaise($variable, $default = '#default#')
 	{
 		return Environment::get($variable, $default);
 	}

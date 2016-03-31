@@ -68,7 +68,7 @@ class Environment {
 	 * @return bool|null|string
 	 * @throws EnvironmentVariableNotSet
 	 */
-	public static function get($variable, $default = '#default#')
+	public static function getOrRaise($variable, $default = '#default#')
 	{
 		static::setAppEnv();
 
