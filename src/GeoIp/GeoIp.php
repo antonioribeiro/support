@@ -8,30 +8,35 @@ class GeoIp
 {
     private $geoIp;
 
-    public function __construct() {
-        $this->geoIp = $this->getGeoIpInstance();
+    private function getGeoIp()
+    {
+        if (! $this->geoIp) {
+            $this->geoIp = $this->getGeoIpInstance();
+        }
+
+        return $this->geoIp;
     }
 
     public function searchAddr($addr) {
-        return $this->geoIp->searchAddr($addr);
+        return $this->getGeoIp()->searchAddr($addr);
     }
 
     /**
      * @return boolean
      */
     public function isEnabled() {
-        return $this->geoIp->isEnabled();
+        return $this->getGeoIp()->isEnabled();
     }
 
     /**
      * @param boolean $enabled
      */
     public function setEnabled($enabled) {
-        return $this->geoIp->setEnabled($enabled);
+        return $this->getGeoIp()->setEnabled($enabled);
     }
 
     public function isGeoIpAvailable() {
-        return $this->geoIp->isGeoIpAvailable();
+        return $this->getGeoIp()->isGeoIpAvailable();
     }
 
     private function getGeoIpInstance() {
