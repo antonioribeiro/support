@@ -1069,4 +1069,9 @@ if ( ! function_exists( 'isLaravel5' ))
 	{
 		return Laravel::VERSION >= '5.0.0';
 	}
+
+    function isLaravel53()
+    {
+        return Laravel::VERSION >= '5.3.0';
+    }
 }
