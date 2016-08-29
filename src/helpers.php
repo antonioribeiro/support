@@ -1075,3 +1075,23 @@ if ( ! function_exists( 'isLaravel5' ))
         return Laravel::VERSION >= '5.3.0';
     }
 }
+
+if ( ! function_exists( 'array_permute' ))
+{
+    function array_permute($items, $perms = [])
+    {
+        if (empty($items)) {
+            $return = array($perms);
+        }  else {
+            $return = array();
+            for ($i = count($items) - 1; $i >= 0; --$i) {
+                $newitems = $items;
+                $newperms = $perms;
+                list($foo) = array_splice($newitems, $i, 1);
+                array_unshift($newperms, $foo);
+                $return = array_merge($return, array_permute($newitems, $newperms));
+            }
+        }
+        return $return;
+    }
+}
