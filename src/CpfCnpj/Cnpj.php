@@ -33,7 +33,12 @@ class Cnpj extends CpfCnpj
         $filiais     = substr($cnpj, 8, 4);
         $verificador = substr($cnpj, 12);
 
-        return implode(".", $partes) . '/' . $filiais . '-' . $verificador;
+        if (! empty($partes) && ! empty($filiais) && ! empty($verificador))
+        {
+            return implode(".", $partes) . '/' . $filiais . '-' . $verificador;
+        }
+
+        return null;
     }
 
     /**

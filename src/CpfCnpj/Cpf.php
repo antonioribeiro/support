@@ -22,13 +22,20 @@ class Cpf extends CpfCnpj
     public static function formatar($cpf)
     {
         $cpf = static::digitos($cpf);
+
         if (strlen($cpf) != 11) {
             return "";
         }
+
         $partes      = str_split($cpf, 3);
         $verificador = array_pop($partes);
 
-        return implode(".", $partes) . '-' . $verificador;
+        if (! empty($partes = implode(".", $partes)) && ! empty($verificador))
+        {
+            return  $partes . '-' . $verificador;
+        }
+
+        return null;
     }
 
     /**
