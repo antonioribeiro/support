@@ -170,7 +170,14 @@ class ImporterExporter
 
                 if ($row = $this->importCsv($row, $delimiter, $enclosure, $escape))
                 {
-                    $result[] = array_combine($keys, $row);
+                    try {
+                        $result[] = array_combine($keys, $row);
+                    }
+                    catch (\Exception $exception)
+                    {
+                        echo "Error in file: ";
+                        dd($row);
+                    }
                 }
             }
         }
@@ -194,8 +201,10 @@ class ImporterExporter
         $data = preg_replace('/\t+/', '', $data);
         $data = str_replace('_SPACE_', ' ', $data);
 
-        $data = json_decode($data);
+        $data = json_decode($data, true);
+
         $jsonLastError = json_last_error();
+
         if ($jsonLastError !== JSON_ERROR_NONE) {
             $errorMsg = null;
             switch ($jsonLastError) {
