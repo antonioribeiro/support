@@ -1113,3 +1113,17 @@ if ( ! function_exists( 'array_permute' ))
         return $return;
     }
 }
+
+if ( ! function_exists( 'is_uuid' ))
+{
+    function is_uuid($guid)
+    {
+        if (preg_match('/^\{?[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}\}?$/', strtoupper($guid))) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
