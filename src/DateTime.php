@@ -27,11 +27,11 @@ class DateTime extends Carbon
 
     public static function parse($time = null, $tz = null)
     {
-        try
-        {
-            return new static($time, $tz);
-        }
-        catch (\Exception $e) {}
+//        try
+//        {
+//            return new static($time, $tz);
+//        }
+//        catch (\Exception $e) {}
 
         $time = trim($time);
 
