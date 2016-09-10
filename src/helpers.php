@@ -1126,4 +1126,54 @@ if ( ! function_exists( 'is_uuid' ))
     }
 }
 
+if ( ! function_exists( 'array_strings_generator' ))
+{
+    function array_strings_generator($array, $base_string)
+    {
+        $results = [];
 
+        $array = [ 0 => $array ];
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($array));
+
+        foreach ($iterator as $key => $value)
+        {
+            for ($i = $iterator->getDepth() - 1; $i > 0; $i--)
+            {
+                $results[$iterator->getSubIterator($i)->key()] = $value;
+            }
+
+            if (count($results) === count($array[0]))
+            {
+                $string = $base_string;
+
+                foreach ($results as $name => $item)
+                {
+                    $string = str_replace($name, $item, $string);
+                }
+
+                yield $string;
+            }
+        }
+
+        return null;
+    }
+}
+
+if ( ! function_exists( 'git_version' ))
+{
+    function git_version()
+    {
+        exec('git describe --always',$version_mini_hash);
+
+        exec('git rev-list HEAD | wc -l',$version_number);
+
+        exec('git log -1',$line);
+
+        $version['short'] = "v1.".trim($version_number[0])." - ".$version_mini_hash[0];
+
+        $version['full'] = "v1.".trim($version_number[0]).".$version_mini_hash[0] (".str_replace('commit ','',$line[0]).")";
+
+        return $version;
+    }
+}
