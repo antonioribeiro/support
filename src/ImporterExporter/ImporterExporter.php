@@ -157,6 +157,8 @@ class ImporterExporter
         {
             list($delimiter, $enclosure) = $this->detectCsvConfig($data[0]);
 
+            $data[0] = preg_replace('/[\x00-\x1F\x7F]/', '', $data[0]);
+
             $keys = $this->importCsv($data[0], $delimiter, $enclosure, $escape);
 
             foreach ($data as $row)
@@ -166,7 +168,14 @@ class ImporterExporter
                     continue;
                 }
 
-                $row = utf8_encode($row);
+                if (mb_detect_encoding($row, null, true) !== 'UTF-8')
+                {
+                    $row = utf8_encode($row);
+                }
+                else
+                {
+                    $row = utf8_decode($row);
+                }
 
                 if ($row = $this->importCsv($row, $delimiter, $enclosure, $escape))
                 {

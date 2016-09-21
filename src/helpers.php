@@ -223,7 +223,7 @@ if ( ! function_exists('value'))
 	 * Return the default value of the given value.
 	 *
 	 * @param  mixed  $value
-	 * @return mixed
+* @return mixed
 	 */
 	function value($value)
 	{
@@ -1177,3 +1177,17 @@ if ( ! function_exists( 'git_version' ))
         return $version;
     }
 }
+
+
+if ( ! function_exists( 'str_to_utf8' ))
+{
+    function str_to_utf8($str) {
+        if (mb_detect_encoding($str, 'UTF-8', true) === false) {
+            $str = utf8_encode($str);
+        }
+
+        return $str;
+    }
+}
+
+
