@@ -1190,4 +1190,14 @@ if ( ! function_exists( 'str_to_utf8' ))
     }
 }
 
+if ( ! function_exists( 'get_class_path' ))
+{
+    function get_class_path($class)
+    {
+        if (! class_exists($class)) {
+            return null;
+        }
 
+        return dirname((new ReflectionClass($class))->getFileName());
+    }
+}
