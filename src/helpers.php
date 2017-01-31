@@ -795,6 +795,19 @@ if ( ! function_exists( 'closure_dump' ))
 	}
 }
 
+if ( ! function_exists( 'isLaravel5' ))
+{
+    function isLaravel5()
+    {
+        return Laravel::VERSION >= '5.0.0';
+    }
+
+    function isLaravel53()
+    {
+        return Laravel::VERSION >= '5.3.0';
+    }
+}
+
 if ( ! function_exists( 'db_listen' ))
 {
     function db_listen($dump = true, $log = true)
@@ -1079,19 +1092,6 @@ if ( ! function_exists( 'get_file_namespace' ))
 
 		return false;
 	}
-}
-
-if ( ! function_exists( 'isLaravel5' ))
-{
-	function isLaravel5()
-	{
-		return Laravel::VERSION >= '5.0.0';
-	}
-
-    function isLaravel53()
-    {
-        return Laravel::VERSION >= '5.3.0';
-    }
 }
 
 if ( ! function_exists( 'array_permute' ))
