@@ -24,7 +24,7 @@ class Config {
 
     public function set($key, $value = null)
     {
-        $this->config->set($this->namespace.'::'.$key, $value);
+        $this->config->set($this->namespace.$key, $value);
     }
 
 }
