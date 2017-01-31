@@ -116,7 +116,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			$this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
 		}
 
-		$this->app[$this->packageName.'.config'] = $this->app->share(function($app)
+		$this->app->singleton($this->packageName.'.config', function($app)
 		{
 			// Waiting for https://github.com/laravel/framework/pull/7440
 			// return new Config($app['config'], $this->packageNamespace . ( ! isLaravel5() ? '::' : '.config.'));
@@ -132,7 +132,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerFileSystem()
 	{
-		$this->app[$this->packageName.'.fileSystem'] = $this->app->share(function($app)
+		$this->app->singleton($this->packageName.'.fileSystem', function($app)
 		{
 			return new Filesystem;
 		});
