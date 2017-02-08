@@ -84,7 +84,7 @@ class Environment {
 			$value = getenv($variable);
 		}
 
-		if ($value == false || empty($value))
+        if (!isset($variable))
 		{
 			if ($default === '#default#')
 			{
