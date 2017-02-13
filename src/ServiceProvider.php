@@ -43,9 +43,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		$this->publishFiles();
 
 		$this->loadViews();
-
-		$this->loadHelper();
-	}
+    }
 
 	/**
 	 * Boot for the child ServiceProvider
@@ -56,9 +54,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	{
 		if ( ! $this->registered)
 		{
-//		    $this->loadHelper();
+            $this->loadHelper();
 
-			$this->mergeConfig();
+            $this->mergeConfig();
 
 			$this->registerNamespace();
 
