@@ -5,7 +5,8 @@ namespace PragmaRX\Support;
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
-abstract class ServiceProvider extends IlluminateServiceProvider {
+abstract class ServiceProvider extends IlluminateServiceProvider
+{
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -43,7 +44,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		$this->publishFiles();
 
 		$this->loadViews();
-    }
+	}
 
 	/**
 	 * Boot for the child ServiceProvider
@@ -52,11 +53,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	protected function preRegister()
 	{
-		if ( ! $this->registered)
-		{
-            $this->loadHelper();
+		if (!$this->registered) {
+			$this->loadHelper();
 
-            $this->mergeConfig();
+			$this->mergeConfig();
 
 			$this->registerNamespace();
 
@@ -67,7 +67,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			$this->registered = true;
 		}
 	}
-	
+
 	/**
 	 * Register the service provider.
 	 *
@@ -89,7 +89,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 		// Waiting for https://github.com/laravel/framework/pull/7440
 		// return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
 
-		$key = $this->packageName . ($key ? '.'.$key : '');
+		$key = $this->packageName . ($key ? '.' . $key : '');
 
 		return $this->app['config']->get($key);
 	}
@@ -101,8 +101,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerConfig()
 	{
-		$this->app->singleton($this->packageName.'.config', function($app)
-		{
+		$this->app->singleton($this->packageName . '.config', function ($app) {
 			// Waiting for https://github.com/laravel/framework/pull/7440
 			// return new Config($app['config'], $this->packageNamespace . '.config.');
 
@@ -117,8 +116,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerFileSystem()
 	{
-		$this->app->singleton($this->packageName.'.fileSystem', function($app)
-		{
+		$this->app->singleton($this->packageName . '.fileSystem', function ($app) {
 			return new Filesystem;
 		});
 	}
@@ -135,51 +133,47 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	private function publishFiles()
 	{
-        if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
-        {
-            $this->publishes(
-                [ $configFile => config_path($this->packageName.'.php') ],
-                'config'
-            );
-        }
+		if (file_exists($configFile = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
+			$this->publishes(
+				[$configFile => config_path($this->packageName . '.php')],
+				'config'
+			);
+		}
 
-        if (file_exists($migrationsPath = $this->getRootDirectory().DIRECTORY_SEPARATOR.'migrations'))
-        {
-            $this->publishes(
-                [ $migrationsPath => base_path('database'.DIRECTORY_SEPARATOR.'migrations') ],
-                'migrations'
-            );
-        }
+		if (file_exists($migrationsPath = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'migrations')) {
+			$this->publishes(
+				[$migrationsPath => base_path('database' . DIRECTORY_SEPARATOR . 'migrations')],
+				'migrations'
+			);
+		}
 	}
 
 	private function mergeConfig()
 	{
-        if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
-        {
-            $this->mergeConfigFrom(
-                $configFile, $this->packageName
-            );
-        }
+		if (file_exists($configFile = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
+			$this->mergeConfigFrom(
+				$configFile, $this->packageName
+			);
+		}
 	}
 
 	private function registerNamespace()
 	{
-        // Waiting for https://github.com/laravel/framework/pull/7440
-        // $this->packageNamespace = "$this->packageVendor.$this->packageName";
+		// Waiting for https://github.com/laravel/framework/pull/7440
+		// $this->packageNamespace = "$this->packageVendor.$this->packageName";
 
-        $this->packageNamespace = $this->packageName;
+		$this->packageNamespace = $this->packageName;
 	}
 
 	private function loadViews()
 	{
-        if (file_exists($viewsFolder = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'views'))
-        {
-            $this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
-        }
+		if (file_exists($viewsFolder = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'views')) {
+			$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
+		}
 	}
 
 	private function loadHelper()
-    {
-        require_once('helpers.php');
-    }
+	{
+		require_once('helpers.php');
+	}
 }
