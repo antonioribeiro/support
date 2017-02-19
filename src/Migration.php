@@ -139,7 +139,7 @@ abstract class Migration extends IlluminateMigration
 	{
 		$previous = property_exists($exception, 'previous')
 					? $exception->previous
-					: null;
+					: $exception;
 
 		if ($exception instanceof \Illuminate\Database\QueryException)
 		{
