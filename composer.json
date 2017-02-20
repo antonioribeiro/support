@@ -1,5 +1,5 @@
 {
-    "name": "pragmarx/support",
+    "name": "fgreinus/antonioribeiro-support",
 
     "description": "PragmaRX components support package",
 
@@ -24,19 +24,10 @@
     "autoload": {
         "psr-4": {
             "PragmaRX\\Support\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
 
     "suggest": {
         "laravel/framework": "Laravel framework."
-    },
-
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.7.x-dev"
-        }
     }
 }
