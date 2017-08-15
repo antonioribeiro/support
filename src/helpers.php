@@ -937,13 +937,6 @@ if ( ! function_exists( 'flip_coin' ))
 	}
 }
 
-if ( ! function_exists( 'csrf_token' ) && ! isLaravel5())
-{
-	function csrf_token()
-	{
-		return app()->make('session.store')->getToken();
-	}
-}
 
 if ( ! function_exists( 'make_path' ))
 {
