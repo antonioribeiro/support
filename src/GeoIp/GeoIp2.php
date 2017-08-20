@@ -7,11 +7,13 @@ use GeoIp2\Exception\AddressNotFoundException;
 
 class GeoIp2 extends GeoIpAbstract implements GeoIpContract
 {
+    const DATABASE_FILE_NAME = 'GeoLite2-City.mmdb';
+
     private $reader;
 
-    public function __construct()
+    public function __construct($databasePath = null)
     {
-        $this->reader = new GeoIpReader($this->getGeoliteFileName());
+        $this->reader = new GeoIpReader($this->getGeoliteFileName($databasePath));
     }
 
     public function searchAddr($addr) {
@@ -28,10 +30,13 @@ class GeoIp2 extends GeoIpAbstract implements GeoIpContract
     }
 
     /**
+     * Get the GeoIp database file name and path.
+     *
+     * @param null $databasePath
      * @return string
      */
-    private function getGeoliteFileName() {
-        return __DIR__ . "/GeoLite2-City.mmdb";
+    private function getGeoliteFileName($databasePath = null) {
+        return ($databasePath ?: __DIR__) . DIRECTORY_SEPARATOR . static::DATABASE_FILE_NAME;
     }
 
     private function renderData() {

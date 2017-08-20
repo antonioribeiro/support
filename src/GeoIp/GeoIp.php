@@ -8,10 +8,20 @@ class GeoIp
 {
     private $geoIp;
 
+    /**
+     * @var null
+     */
+    private $databasePath;
+
+    public function __construct($databasePath = null)
+    {
+        $this->databasePath = $databasePath;
+    }
+
     private function getGeoIp()
     {
         if (! $this->geoIp) {
-            $this->geoIp = $this->getGeoIpInstance();
+            $this->geoIp = $this->getGeoIpInstance($this->databasePath);
         }
 
         return $this->geoIp;
@@ -39,10 +49,10 @@ class GeoIp
         return $this->getGeoIp()->isGeoIpAvailable();
     }
 
-    private function getGeoIpInstance() {
+    private function getGeoIpInstance($databasePath = null) {
         if (class_exists(GeoIpReader::class))
         {
-            return new GeoIp2();
+            return new GeoIp2($databasePath);
         }
 
         return new GeoIp1();
