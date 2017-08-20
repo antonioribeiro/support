@@ -213,8 +213,8 @@ class IpAddress {
 	 *     CIDR::cidrToRange("127.0.0.128/25");
 	 * Result:
 	 *     array(2) {
-	 *       [0]=> string(11) "127.0.0.128"
-	 *       [1]=> string(11) "127.0.0.255"
+	 *       "127.0.0.128",
+	 *       "127.0.0.255",
 	 *     }
 	 * @param $cidr string CIDR block
 	 * @return Array low end of range then high end of range.
@@ -235,6 +235,32 @@ class IpAddress {
 
 		return $range;
 	}
+
+    /**
+     * method twoIpsToRange.
+     * Returns an array of only two IPv4 addresses that have the lowest ip
+     * address as the first entry. If you need to check to see if an IPv4
+     * Usage:
+     *     CIDR::cidrToRange("127.0.0.1-127.0.0.255");
+     * Result:
+     *     array(2) {
+     *       "127.0.0.1",
+     *       "127.0.0.255",
+     *     }
+     * @param $string
+     * @return Array low end of range then high end of range.
+     */
+    public static function twoIpsToRange($string)
+    {
+        if (! preg_match_all("/^((?:\d{1,3}\.?){4})\-((?:\d{1,3}\.?){4})$/", $string, $matches)) {
+            return false;
+        }
+
+        return array(
+            $matches[1][0],
+            $matches[2][0],
+        );
+    }
 
 	public static function ipV4Valid($ip)
 	{
@@ -257,6 +283,14 @@ class IpAddress {
 				$isRange = static::cidrToRange($ip);
 			}
 			catch(\Exception $e) {}
+
+            try
+            {
+                if (!$isIpAddress && !$isRange) {
+                    $isRange = static::twoIpsToRange($ip);
+                }
+            }
+            catch(\Exception $e) {}
 		}
 
 		return $ip && ($isIpAddress || $isRange);
