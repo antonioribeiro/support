@@ -18,9 +18,14 @@ class GeoIp
         $this->databasePath = $databasePath;
     }
 
+    private function databaseExists()
+    {
+        return file_exists($this->databasePath);
+    }
+
     private function getGeoIp()
     {
-        if (! $this->geoIp) {
+        if (! $this->geoIp && $this->databaseExists()) {
             $this->geoIp = $this->getGeoIpInstance($this->databasePath);
         }
 
@@ -28,7 +33,9 @@ class GeoIp
     }
 
     public function searchAddr($addr) {
-        return $this->getGeoIp()->searchAddr($addr);
+        if ($geoip = $this->getGeoIp()) {
+            return $geoip->searchAddr($addr);
+        }
     }
 
     /**
