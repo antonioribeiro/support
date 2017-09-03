@@ -7,15 +7,15 @@
  * @author Jonavon Wilcox <jowilcox@vt.edu>
  * @version Sat Jun  6 21:26:48 EDT 2009
  * @copyright Copyright (c) 2009 Jonavon Wilcox
- */
-/**
+ *
  * class CIDR. (originally)
  * Holds static functions for ip address manipulation.
  */
 
 namespace PragmaRX\Support;
 
-class IpAddress {
+class IpAddress
+{
 	/**
 	 * method CIDRtoMask
 	 * Return a netmask string if given an integer between 0 and 32. I am
@@ -306,16 +306,59 @@ class IpAddress {
 		return ipv4_match_mask($ip, $network);
 	}
 
-	public function ipV4InRange($ip, $range)
-	{
-		return ipv4_in_range($ip, $range);
-	}
-
     public static function isCidr($ip) {
         if (strpos($ip, '/') === false) {
             return false;
         }
 
         return static::cidrToRange($ip);
+    }
+
+    public static function ipv4InRange($ip, $range)
+    {
+        if (is_array($range))
+        {
+            foreach ($range as $iprange)
+            {
+                if (static::ipv4InRange($ip, $iprange))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Wildcarded range
+        // 192.168.1.*
+        if ( ! str_contains($range, '-') && str_contains($range, '*'))
+        {
+            $range = str_replace('*', '0', $range) . '-' . str_replace('*', '255', $range);
+        }
+
+        // Dashed range
+        //   192.168.1.1-192.168.1.100
+        //   0.0.0.0-255.255.255.255
+        if (count($twoIps = explode('-', $range)) == 2)
+        {
+            $ip1 = ip2long($twoIps[0]);
+            $ip2 = ip2long($twoIps[1]);
+
+            return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
+        }
+
+        if (count($twoIps = explode('-', $range)) == 2)
+        {
+            $ip1 = ip2long($twoIps[0]);
+            $ip2 = ip2long($twoIps[1]);
+
+            return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
+        }
+
+        // Masked range or fixed IP
+        //   192.168.17.1/16 or
+        //   127.0.0.1/255.255.255.255 or
+        //   10.0.0.1
+        return ipv4_match_mask($ip, $range);
     }
 }
