@@ -310,4 +310,12 @@ class IpAddress {
 	{
 		return ipv4_in_range($ip, $range);
 	}
+
+    public static function isCidr($ip) {
+        if (strpos($ip, '/') === false) {
+            return false;
+        }
+
+        return static::cidrToRange($ip);
+    }
 }
