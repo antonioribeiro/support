@@ -3,7 +3,6 @@
 use PragmaRX\Support\Environment;
 use PragmaRX\Support\Debug\Dumper;
 use PragmaRX\Support\IpAddress;
-use Illuminate\Foundation\Application as Laravel;
 
 if ( ! function_exists('envRaise'))
 {
@@ -745,16 +744,28 @@ if ( ! function_exists( 'closure_dump' ))
 	}
 }
 
+if ( ! function_exists( 'laravelVersion' ))
+{
+    function laravelVersion()
+    {
+        if (defined('Illuminate\Foundation\Application::VERSION')) {
+            return Illuminate\Foundation\Application::VERSION >= '5.0.0';
+        }
+
+        return '4.0.0';
+    }
+}
+
 if ( ! function_exists( 'isLaravel5' ))
 {
     function isLaravel5()
     {
-        return Laravel::VERSION >= '5.0.0';
+        return laravelVersion() >= '5.0.0';
     }
 
     function isLaravel53()
     {
-        return Laravel::VERSION >= '5.3.0';
+        return laravelVersion() >= '5.3.0';
     }
 }
 
