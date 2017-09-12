@@ -2,6 +2,7 @@
 
 use PragmaRX\Support\Environment;
 use PragmaRX\Support\Debug\Dumper;
+use PragmaRX\Support\IpAddress;
 use Illuminate\Foundation\Application as Laravel;
 
 if ( ! function_exists('envRaise'))
@@ -1141,5 +1142,13 @@ if ( ! function_exists( 'get_class_path' ))
         }
 
         return dirname((new ReflectionClass($class))->getFileName());
+    }
+}
+
+if ( ! function_exists( 'ipv4_in_range' ))
+{
+    function ipv4_in_range($ip, $range)
+    {
+        return IpAddress::ipv4InRange($ip, $range);
     }
 }
