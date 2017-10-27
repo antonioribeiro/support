@@ -147,7 +147,7 @@ abstract class Migration extends IlluminateMigration
 		}
 		else
 		{
-			throw new $exception($exception->getMessage(), $previous);
+            throw new $exception($exception->getMessage(), $exception->getCode(), $previous);
 		}
 	}
 
