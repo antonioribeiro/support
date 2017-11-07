@@ -2,11 +2,14 @@
 
 namespace PragmaRX\Support;
 
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class Yaml
+class YamlConfig
 {
+    private $replaced = 0;
+
     /**
      * Check if the string is a directory.
      *
@@ -40,7 +43,7 @@ class Yaml
      * @param $directory
      * @return \Illuminate\Support\Collection
      */
-    public function listYamlFilesFromDir($directory)
+    public function listFiles($directory)
     {
         if (! file_exists($directory)) {
             return collect([]);
@@ -50,7 +53,7 @@ class Yaml
             return $this->isDirectory($item) || $this->isYamlFile($item);
         })->mapWithKeys(function ($item, $key) {
             if (is_dir($item)) {
-                return [basename($item) => $this->listYamlFilesFromDir($item)->toArray()];
+                return [basename($item) => $this->listFiles($item)->toArray()];
             }
 
             return [$key => $item];
@@ -58,16 +61,17 @@ class Yaml
     }
 
     /**
-     * Load yaml files from directory.
+     * Load yaml files from directory and add to Laravel config.
      *
-     * @param $directory
+     * @param string $directory
+     * @param string $configKey
      * @param bool $parseYaml
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function loadYamlFilesFromDir($directory, $parseYaml = true)
+    public function loadToConfig($directory, $configKey, $parseYaml = true)
     {
-        return $this->cleanArrayKeysRecursive(
-            $this->listYamlFilesFromDir($directory)->mapWithKeys(function ($file, $key) use ($directory, $parseYaml) {
+        $loaded = $this->cleanArrayKeysRecursive(
+            $this->listFiles($directory)->mapWithKeys(function ($file, $key) use ($directory, $parseYaml) {
                 if ((is_string($file) && file_exists($file)) || is_array($file)) {
                     list($file, $contents) = $this->loadFile($file, $parseYaml);
 
@@ -77,6 +81,8 @@ class Yaml
                 return [$key => $file];
             })
         );
+
+        return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
     }
 
     /**
@@ -87,7 +93,7 @@ class Yaml
      */
     private function parseFile($contents)
     {
-        return SymfonyYaml::parse($this->replaceContents($contents));
+        return SymfonyYaml::parse($contents);
     }
 
     /**
@@ -102,6 +108,48 @@ class Yaml
     }
 
     /**
+     * Exaustively find and replace executable code.
+     *
+     * @param $contents
+     * @return Collection
+     */
+    public function findAndReplaceExecutableCodeToExhaustion($contents, $configKey)
+    {
+        do {
+            $this->replaced = 0;
+
+            $contents = $this->recursivelyFindAndReplaceExecutableCode($contents);
+
+            config([$configKey => $contents->toArray()]);
+        } while ($this->replaced > 0);
+
+        return $contents;
+    }
+
+    /**
+     * Replace contents.
+     *
+     * @param $old
+     * @return Collection
+     */
+    private function recursivelyFindAndReplaceExecutableCode($old)
+    {
+        if (is_array($old instanceof Arrayable ? $old->toArray() : $old)) {
+            return collect($old)->map(function ($item) {
+                return $this->recursivelyFindAndReplaceExecutableCode($item);
+            });
+        }
+
+        $new = $this->replaceContents($old);
+
+        if ($new !== $old) {
+            $this->replaced++;
+        }
+
+        return $new;
+    }
+
+    /**
      * Replace contents.
      *
      * @param $contents
@@ -113,7 +161,9 @@ class Yaml
 
         foreach ($matches[0] as $key => $match) {
             if (count($match)) {
-                $contents = str_replace($matches[0][$key], $this->resolveVariable($matches[1][$key]), $contents);
+                if (!is_null($resolved = $this->resolveVariable($matches[1][$key]))) {
+                    $contents = str_replace($matches[0][$key], $resolved, $contents);
+                }
             }
         }
 
@@ -134,7 +184,7 @@ class Yaml
             return $result;
         }
 
-        return config($key) ?: 'null';
+        return config($key);
     }
 
     /**
@@ -152,6 +202,8 @@ class Yaml
 
             return $function($this->removeQuotes($matches[2][0]));
         }
+
+        return null;
     }
 
     /**
