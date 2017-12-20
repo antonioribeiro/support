@@ -160,7 +160,7 @@ class YamlConfig
         preg_match_all('/{{(.*)}}/', $contents, $matches);
 
         foreach ($matches[0] as $key => $match) {
-            if (count($match)) {
+            if (!empty($match)) {
                 if (!is_null($resolved = $this->resolveVariable($matches[1][$key]))) {
                     $contents = str_replace($matches[0][$key], $resolved, $contents);
                 }
