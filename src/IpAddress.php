@@ -347,14 +347,6 @@ class IpAddress
             return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
         }
 
-        if (count($twoIps = explode('-', $range)) == 2)
-        {
-            $ip1 = ip2long($twoIps[0]);
-            $ip2 = ip2long($twoIps[1]);
-
-            return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
-        }
-
         // Masked range or fixed IP
         //   192.168.17.1/16 or
         //   127.0.0.1/255.255.255.255 or
