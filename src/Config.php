@@ -2,7 +2,7 @@
 
 namespace PragmaRX\Support;
 
-use Illuminate\Config\Repository as IlluminateConfig;
+use Illuminate\Contracts\Config\Repository as IlluminateConfig;
 
 class Config {
 
