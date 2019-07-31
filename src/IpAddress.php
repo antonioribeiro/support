@@ -229,6 +229,11 @@ class IpAddress
 
 		$cidr = explode('/', $cidr);
 
+		if (count($cidr) !== 2) {
+			return false;
+		}
+
+
 		$range[0] = long2ip((ip2long($cidr[0])) & ((-1 << (32 - (int)$cidr[1]))));
 
 		$range[1] = long2ip((ip2long($cidr[0])) + pow(2, (32 - (int)$cidr[1])) - 1);
