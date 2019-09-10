@@ -2,7 +2,7 @@
 
 use PragmaRX\Support\Environment;
 use PragmaRX\Support\Debug\Dumper;
-use Illuminate\Foundation\Application as Laravel;
+use PragmaRX\Support\IpAddress;
 
 if ( ! function_exists('envRaise'))
 {
@@ -672,57 +672,6 @@ if ( ! function_exists( 'ipv4_match_mask' ))
 	}
 }
 
-if ( ! function_exists( 'ipv4_in_range' ))
-{
-	function ipv4_in_range($ip, $range)
-	{
-		if (is_array($range))
-			{
-			foreach ($range as $iprange)
-			{
-				if (ipv4_in_range($ip, $iprange))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		// Wildcarded range
-		// 192.168.1.*
-		if ( ! str_contains($range, '-') && str_contains($range, '*'))
-		{
-			$range = str_replace('*', '0', $range) . '-' . str_replace('*', '255', $range);
-		}
-
-		// Dashed range
-		//   192.168.1.1-192.168.1.100
-		//   0.0.0.0-255.255.255.255
-		if (count($twoIps = explode('-', $range)) == 2)
-		{
-			$ip1 = ip2long($twoIps[0]);
-			$ip2 = ip2long($twoIps[1]);
-
-			return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
-		}
-
-		if (count($twoIps = explode('-', $range)) == 2)
-		{
-			$ip1 = ip2long($twoIps[0]);
-			$ip2 = ip2long($twoIps[1]);
-
-			return ip2long($ip) >= $ip1 && ip2long($ip) <= $ip2;
-		}
-
-		// Masked range or fixed IP
-		//   192.168.17.1/16 or
-		//   127.0.0.1/255.255.255.255 or
-		//   10.0.0.1
-		return ipv4_match_mask($ip, $range);
-	}
-}
-
 if ( ! function_exists( 'in_array_wildcard' ))
 {
 	function in_array_wildcard($what, $array)
@@ -1169,5 +1118,33 @@ if ( ! function_exists( 'get_class_path' ))
         }
 
         return dirname((new ReflectionClass($class))->getFileName());
+    }
+}
+
+if ( ! function_exists( 'ipv4_in_range' ))
+{
+    function ipv4_in_range($ip, $range)
+    {
+        return IpAddress::ipv4InRange($ip, $range);
+    }
+}
+
+if (! function_exists('instantiate')) {
+    /**
+     * Instantiate a class.
+     *
+     * @param $abstract
+     * @param array $parameters
+     * @return object
+     */
+    function instantiate($abstract, $parameters = [])
+    {
+        if (is_array($parameters) && count($parameters)) {
+            $reflection = new ReflectionClass($abstract);
+
+            return $reflection->newInstanceArgs((array) $parameters);
+        }
+
+        return app($abstract);
     }
 }

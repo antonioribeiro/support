@@ -8,17 +8,34 @@ class GeoIp
 {
     private $geoIp;
 
+    /**
+     * @var null
+     */
+    private $databasePath;
+
+    public function __construct($databasePath = null)
+    {
+        $this->databasePath = $databasePath;
+    }
+
+    private function databaseExists()
+    {
+        return file_exists($this->databasePath);
+    }
+
     private function getGeoIp()
     {
-        if (! $this->geoIp) {
-            $this->geoIp = $this->getGeoIpInstance();
+        if (! $this->geoIp && $this->databaseExists()) {
+            $this->geoIp = $this->getGeoIpInstance($this->databasePath);
         }
 
         return $this->geoIp;
     }
 
     public function searchAddr($addr) {
-        return $this->getGeoIp()->searchAddr($addr);
+        if ($geoip = $this->getGeoIp()) {
+            return $geoip->searchAddr($addr);
+        }
     }
 
     /**
@@ -39,10 +56,10 @@ class GeoIp
         return $this->getGeoIp()->isGeoIpAvailable();
     }
 
-    private function getGeoIpInstance() {
+    private function getGeoIpInstance($databasePath = null) {
         if (class_exists(GeoIpReader::class))
         {
-            return new GeoIp2();
+            return new GeoIp2($databasePath);
         }
 
         return new GeoIp1();
