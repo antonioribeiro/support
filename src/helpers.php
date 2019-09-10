@@ -744,67 +744,33 @@ if ( ! function_exists( 'closure_dump' ))
 	}
 }
 
-if ( ! function_exists( 'laravelVersion' ))
-{
-    function laravelVersion()
-    {
-        if (defined('Illuminate\Foundation\Application::VERSION')) {
-            return Illuminate\Foundation\Application::VERSION >= '5.0.0';
-        }
-
-        return '4.0.0';
-    }
-}
-
-if ( ! function_exists( 'isLaravel5' ))
-{
-    function isLaravel5()
-    {
-        return laravelVersion() >= '5.0.0';
-    }
-
-    function isLaravel53()
-    {
-        return laravelVersion() >= '5.3.0';
-    }
-}
-
 if ( ! function_exists( 'db_listen' ))
 {
     function db_listen($dump = true, $log = true)
 	{
-        if (! isLaravel53()) {
-            \DB::listen(function($sql, $bindings, $time) use ($dump, $log)
-            {
-                if ($dump)
-                {
-                    var_dump($sql);
-                    var_dump($bindings);
-                }
-
-                if ($log)
-                {
-                    \Log::info($sql);
-                    \Log::info($bindings);
-                }
-            });
-        }
-        else
+        \DB::listen(function() use ($dump, $log)
         {
-            \DB::listen(function($query) use ($dump, $log) {
-                if ($dump)
-                {
-                    var_dump($query->sql);
-                    var_dump($query->bindings);
-                }
+            $arguments = func_get_args();
 
-                if ($log)
-                {
-                    \Log::info($query->sql);
-                    \Log::info($query->bindings);
-                }
-            });
-        }
+            if (is_object($arguments[0])) {
+                $sql = $arguments[0]->sql;
+                $bindings = $arguments[0]->bindings;
+            } else {
+                $sql = $arguments[0];
+                $bindings = $arguments[1];
+            }
+            if ($dump)
+            {
+                var_dump($sql);
+                var_dump($bindings);
+            }
+
+            if ($log)
+            {
+                \Log::info($sql);
+                \Log::info($bindings);
+            }
+        });
 	}
 }
 
@@ -897,7 +863,6 @@ if ( ! function_exists( 'flip_coin' ))
 		return mt_rand(0, 1);
 	}
 }
-
 
 if ( ! function_exists( 'make_path' ))
 {

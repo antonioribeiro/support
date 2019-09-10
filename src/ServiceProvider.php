@@ -5,7 +5,8 @@ namespace PragmaRX\Support;
 use Illuminate\Foundation\AliasLoader as IlluminateAliasLoader;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
-abstract class ServiceProvider extends IlluminateServiceProvider {
+abstract class ServiceProvider extends IlluminateServiceProvider
+{
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -52,8 +53,9 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	protected function preRegister()
 	{
-		if ( ! $this->registered)
-		{
+		if (!$this->registered) {
+			$this->loadHelper();
+
 			$this->mergeConfig();
 
 			$this->registerNamespace();
@@ -65,7 +67,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 			$this->registered = true;
 		}
 	}
-	
+
 	/**
 	 * Register the service provider.
 	 *
@@ -84,17 +86,10 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	public function getConfig($key = null)
 	{
-		if ( ! isLaravel5())
-		{
-			$key = $this->packageNamespace . ($key ? '::'.$key : '');
-
-			return $this->app['config']->get($key);
-		}
-
 		// Waiting for https://github.com/laravel/framework/pull/7440
 		// return $this->app['config']->get("{$this->packageVendor}.{$this->packageName}.config.{$key}");
 
-		$key = $this->packageName . ($key ? '.'.$key : '');
+		$key = $this->packageName . ($key ? '.' . $key : '');
 
 		return $this->app['config']->get($key);
 	}
@@ -106,22 +101,11 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerConfig()
 	{
-		if ( ! isLaravel5())
-		{
-			/// Fix a possible Laravel Bug
-			$this->app->register('Illuminate\Translation\TranslationServiceProvider');
-
-			$this->app['config']->package($this->packageNamespace, __DIR__.'/../../config', $this->packageNamespace);
-
-			$this->package($this->packageNamespace, $this->packageNamespace, $this->getRootDirectory());
-		}
-
-		$this->app->singleton($this->packageName.'.config', function($app)
-		{
+		$this->app->singleton($this->packageName . '.config', function ($app) {
 			// Waiting for https://github.com/laravel/framework/pull/7440
-			// return new Config($app['config'], $this->packageNamespace . ( ! isLaravel5() ? '::' : '.config.'));
+			// return new Config($app['config'], $this->packageNamespace . '.config.');
 
-			return new Config($app['config'], $this->packageNamespace . ( ! isLaravel5() ? '::' : '.'));
+			return new Config($app['config'], $this->packageNamespace . '.');
 		});
 	}
 
@@ -132,8 +116,7 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 	 */
 	private function registerFileSystem()
 	{
-		$this->app->singleton($this->packageName.'.fileSystem', function($app)
-		{
+		$this->app->singleton($this->packageName . '.fileSystem', function ($app) {
 			return new Filesystem;
 		});
 	}
@@ -150,71 +133,47 @@ abstract class ServiceProvider extends IlluminateServiceProvider {
 
 	private function publishFiles()
 	{
-		if (isLaravel5())
-		{
-			if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
-			{
-				$this->publishes(
-					[ $configFile => config_path($this->packageName.'.php') ],
-					'config'
-				);
-			}
+		if (file_exists($configFile = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
+			$this->publishes(
+				[$configFile => config_path($this->packageName . '.php')],
+				'config'
+			);
+		}
 
-			if (file_exists($migrationsPath = $this->getRootDirectory().DIRECTORY_SEPARATOR.'migrations'))
-			{
-				$this->publishes(
-					[ $migrationsPath => base_path('database'.DIRECTORY_SEPARATOR.'migrations') ],
-					'migrations'
-				);
-			}
+		if (file_exists($migrationsPath = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'migrations')) {
+			$this->publishes(
+				[$migrationsPath => base_path('database' . DIRECTORY_SEPARATOR . 'migrations')],
+				'migrations'
+			);
 		}
 	}
 
 	private function mergeConfig()
 	{
-		if (isLaravel5())
-		{
-			if (file_exists($configFile = $this->getRootDirectory().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php'))
-			{
-				$this->mergeConfigFrom(
-					$configFile, $this->packageName
-				);
-			}
+		if (file_exists($configFile = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
+			$this->mergeConfigFrom(
+				$configFile, $this->packageName
+			);
 		}
 	}
 
 	private function registerNamespace()
 	{
-		if ( ! isLaravel5())
-		{
-			$this->packageNamespace = "$this->packageVendor/$this->packageName";
-		}
-		else
-		{
-			// Waiting for https://github.com/laravel/framework/pull/7440
-			// $this->packageNamespace = "$this->packageVendor.$this->packageName";
+		// Waiting for https://github.com/laravel/framework/pull/7440
+		// $this->packageNamespace = "$this->packageVendor.$this->packageName";
 
-			$this->packageNamespace = $this->packageName;
-		}
+		$this->packageNamespace = $this->packageName;
 	}
 
 	private function loadViews()
 	{
-		if (isLaravel5())
-		{
-			if (file_exists($viewsFolder = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'views'))
-			{
-				$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
-			}
-		}
-		else
-		{
-			$this->app->make('view')->addNamespace
-			(
-					$this->packageNamespace,
-					$this->getRootDirectory().'/views'
-			);
+		if (file_exists($viewsFolder = $this->getRootDirectory() . DIRECTORY_SEPARATOR . 'views')) {
+			$this->loadViewsFrom($viewsFolder, "{$this->packageVendor}/{$this->packageName}");
 		}
 	}
 
+	private function loadHelper()
+	{
+		require_once('helpers.php');
+	}
 }
