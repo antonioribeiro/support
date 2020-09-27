@@ -24,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "PragmaRX\\Support\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
 
     "suggest": {
