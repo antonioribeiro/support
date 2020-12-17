@@ -26,7 +26,7 @@ class PhpSession
 
 	private function isStarted()
 	{
-		return session_status() === PHP_SESSION_ACTIVE;
+		return session_status() === PHP_SESSION_ACTIVE || session_status() === PHP_SESSION_NONE;
 	}
 
 	public function get($key, $namespace = null)
